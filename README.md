@@ -1,2 +1,2 @@
 # Pang_engine
-This is my learning states of creating a game engine
+一个mini渲染器的实现，暂时先这样命名。会把对应学习的笔记也放进来。
