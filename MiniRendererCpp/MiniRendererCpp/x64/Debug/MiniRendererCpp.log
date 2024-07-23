@@ -1,11 +1,11 @@
 ﻿  main.cpp
-D:\mihoyo\LanguageLearning\cpp\MyLearnTinyRenderer0723\Pang_engine\MiniRendererCpp\MiniRendererCpp\main.cpp(40,29): warning C4244: “参数”: 从“double”转换到“const int”，可能丢失数据
-D:\mihoyo\LanguageLearning\cpp\MyLearnTinyRenderer0723\Pang_engine\MiniRendererCpp\MiniRendererCpp\main.cpp(40,24): warning C4244: “参数”: 从“double”转换到“const int”，可能丢失数据
-D:\mihoyo\LanguageLearning\cpp\MyLearnTinyRenderer0723\Pang_engine\MiniRendererCpp\MiniRendererCpp\main.cpp(74,25): warning C4244: “初始化”: 从“double”转换到“float”，可能丢失数据
-D:\mihoyo\LanguageLearning\cpp\MyLearnTinyRenderer0723\Pang_engine\MiniRendererCpp\MiniRendererCpp\main.cpp(77,39): warning C4838: 从“float”转换到“uint8_t”需要收缩转换
-D:\mihoyo\LanguageLearning\cpp\MyLearnTinyRenderer0723\Pang_engine\MiniRendererCpp\MiniRendererCpp\main.cpp(77,39): warning C4244: “初始化”: 从“float”转换到“uint8_t”，可能丢失数据
-D:\mihoyo\LanguageLearning\cpp\MyLearnTinyRenderer0723\Pang_engine\MiniRendererCpp\MiniRendererCpp\main.cpp(77,56): warning C4838: 从“float”转换到“uint8_t”需要收缩转换
-D:\mihoyo\LanguageLearning\cpp\MyLearnTinyRenderer0723\Pang_engine\MiniRendererCpp\MiniRendererCpp\main.cpp(77,56): warning C4244: “初始化”: 从“float”转换到“uint8_t”，可能丢失数据
-D:\mihoyo\LanguageLearning\cpp\MyLearnTinyRenderer0723\Pang_engine\MiniRendererCpp\MiniRendererCpp\main.cpp(77,73): warning C4838: 从“float”转换到“uint8_t”需要收缩转换
-D:\mihoyo\LanguageLearning\cpp\MyLearnTinyRenderer0723\Pang_engine\MiniRendererCpp\MiniRendererCpp\main.cpp(77,73): warning C4244: “初始化”: 从“float”转换到“uint8_t”，可能丢失数据
+D:\mihoyo\LanguageLearning\cpp\MyLearnTinyRenderer0723\Pang_engine\MiniRendererCpp\MiniRendererCpp\main.cpp(46,33): warning C4244: “参数”: 从“double”转换到“const int”，可能丢失数据
+D:\mihoyo\LanguageLearning\cpp\MyLearnTinyRenderer0723\Pang_engine\MiniRendererCpp\MiniRendererCpp\main.cpp(46,28): warning C4244: “参数”: 从“double”转换到“const int”，可能丢失数据
+D:\mihoyo\LanguageLearning\cpp\MyLearnTinyRenderer0723\Pang_engine\MiniRendererCpp\MiniRendererCpp\main.cpp(80,25): warning C4244: “初始化”: 从“double”转换到“float”，可能丢失数据
+D:\mihoyo\LanguageLearning\cpp\MyLearnTinyRenderer0723\Pang_engine\MiniRendererCpp\MiniRendererCpp\main.cpp(83,39): warning C4838: 从“float”转换到“uint8_t”需要收缩转换
+D:\mihoyo\LanguageLearning\cpp\MyLearnTinyRenderer0723\Pang_engine\MiniRendererCpp\MiniRendererCpp\main.cpp(83,39): warning C4244: “初始化”: 从“float”转换到“uint8_t”，可能丢失数据
+D:\mihoyo\LanguageLearning\cpp\MyLearnTinyRenderer0723\Pang_engine\MiniRendererCpp\MiniRendererCpp\main.cpp(83,56): warning C4838: 从“float”转换到“uint8_t”需要收缩转换
+D:\mihoyo\LanguageLearning\cpp\MyLearnTinyRenderer0723\Pang_engine\MiniRendererCpp\MiniRendererCpp\main.cpp(83,56): warning C4244: “初始化”: 从“float”转换到“uint8_t”，可能丢失数据
+D:\mihoyo\LanguageLearning\cpp\MyLearnTinyRenderer0723\Pang_engine\MiniRendererCpp\MiniRendererCpp\main.cpp(83,73): warning C4838: 从“float”转换到“uint8_t”需要收缩转换
+D:\mihoyo\LanguageLearning\cpp\MyLearnTinyRenderer0723\Pang_engine\MiniRendererCpp\MiniRendererCpp\main.cpp(83,73): warning C4244: “初始化”: 从“float”转换到“uint8_t”，可能丢失数据
   MiniRendererCpp.vcxproj -> D:\mihoyo\LanguageLearning\cpp\MyLearnTinyRenderer0723\Pang_engine\MiniRendererCpp\x64\Debug\MiniRendererCpp.exe
