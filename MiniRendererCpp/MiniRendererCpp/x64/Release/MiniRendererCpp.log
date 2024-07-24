@@ -1,0 +1,11 @@
+﻿  main.cpp
+D:\mihoyo\LanguageLearning\cpp\MyLearnTinyRenderer0723\Pang_engine\MiniRendererCpp\MiniRendererCpp\main.cpp(58,33): warning C4244: “参数”: 从“double”转换到“const int”，可能丢失数据
+D:\mihoyo\LanguageLearning\cpp\MyLearnTinyRenderer0723\Pang_engine\MiniRendererCpp\MiniRendererCpp\main.cpp(58,28): warning C4244: “参数”: 从“double”转换到“const int”，可能丢失数据
+D:\mihoyo\LanguageLearning\cpp\MyLearnTinyRenderer0723\Pang_engine\MiniRendererCpp\MiniRendererCpp\main.cpp(70,50): warning C4244: “参数”: 从“double”转换到“const int”，可能丢失数据
+D:\mihoyo\LanguageLearning\cpp\MyLearnTinyRenderer0723\Pang_engine\MiniRendererCpp\MiniRendererCpp\main.cpp(70,26): warning C4244: “参数”: 从“double”转换到“const int”，可能丢失数据
+  正在生成代码
+  1 of 643 functions ( 0.2%) were compiled, the rest were copied from previous compilation.
+    0 functions were new in current compilation
+    1 functions had inline decision re-evaluated but remain unchanged
+  已完成代码的生成
+  MiniRendererCpp.vcxproj -> D:\mihoyo\LanguageLearning\cpp\MyLearnTinyRenderer0723\Pang_engine\MiniRendererCpp\x64\Release\MiniRendererCpp.exe
