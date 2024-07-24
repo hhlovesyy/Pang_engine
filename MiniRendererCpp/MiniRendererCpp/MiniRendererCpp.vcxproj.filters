@@ -24,6 +24,9 @@
     <ClInclude Include="geometry.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="our_gl.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="tgaimage.cpp">
@@ -36,6 +39,9 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="geometry.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="our_gl.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

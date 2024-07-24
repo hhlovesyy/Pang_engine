@@ -136,7 +136,6 @@ const TGAImage& Model::diffuse(int faceIndex) const
                 
 		}
 	}
-    std::cout << "faceIndex :: " << faceIndex << std::endl;
 	return diffusemap[0]; //todo:现在默认返回第一个纹理，后续要做更好的逻辑判断
 }
 
