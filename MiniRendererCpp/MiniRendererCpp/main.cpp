@@ -4,67 +4,63 @@
 #include "tgaimage.h"
 #include "model.h"
 #include "geometry.h"
+#include "our_gl.h"
 
 constexpr int width = 800; // output image size
 constexpr int height = 800;
+
+vec3 light_dir{ 1,1,1 }; // light source，指的是指向光源的方向
+const vec3       eye{ 0,0.8,1 }; // camera position
+const vec3    center{ 0,0.8,0 }; // camera direction
+const vec3        up{ 0,1,0 }; // camera up vector
+
+extern mat<4, 4> ModelView; // "OpenGL" state matrices
+extern mat<4, 4> Projection;
+
+
 TGAColor sample2D(const TGAImage& texture, vec2 uv);
-vec3 barycentric(vec3* pts, vec3 P)
-{
-    vec3 u = cross(vec3(pts[2][0] - pts[0][0], pts[1][0] - pts[0][0], pts[0][0] - P[0]), vec3(pts[2][1] - pts[0][1], pts[1][1] - pts[0][1], pts[0][1] - P[1]));
-    /* `pts` and `P` has integer value as coordinates
-       so `abs(u[2])` < 1 means `u[2]` is 0, that means
-       triangle is degenerate, in this case return something with negative coordinates */
-    if (std::abs(u.z) < 1) return vec3(-1, 1, 1);
-    return vec3(1.f - (u.x + u.y) / u.z, u.y / u.z, u.x / u.z);
-}
 
-void triangle(vec3 pts[3], TGAImage& image, std::vector<vec2>& uvs, std::vector<double>& zbuffer, std::vector<vec3>& normals, vec3& lightDir, const TGAImage& diffuseTexture)
+struct Shader : IShader 
 {
-    vec2 bboxmin(image.width() - 1, image.height() - 1);
-    vec2 bboxmax(0, 0);
-    vec2 clamp(image.width() - 1, image.height() - 1);
-    for (int i = 0; i < 3; i++) {
-        bboxmin.x = std::max(0.0, std::min(bboxmin.x, pts[i].x));
-        bboxmin.y = std::max(0.0, std::min(bboxmin.y, pts[i].y));
-        bboxmax.x = std::min(clamp.x, std::max(bboxmax.x, pts[i].x));
-        bboxmax.y = std::min(clamp.y, std::max(bboxmax.y, pts[i].y));
-    }
-    vec3 P;
-    for (P.x = bboxmin.x; P.x <= bboxmax.x; P.x++)
+    const Model& model;
+    mat<2, 3> varying_uv;  // triangle uv coordinates, written by the vertex shader, read by the fragment shader
+    mat<3, 3> varying_nrm; // normal per vertex to be interpolated by FS
+    mat<3, 3> view_tri;    // triangle in view coordinates
+    vec3 uniform_l;       // light direction in view coordinates，暂时就是世界空间就行
+    
+    Shader(const Model& m) : model(m)
     {
-        for (P.y = bboxmin.y; P.y <= bboxmax.y; P.y++)
-        {
-            vec3 bc_screen = barycentric(pts, P);
-            if (bc_screen.x < 0 || bc_screen.y < 0 || bc_screen.z < 0) continue;
-            //添加与ZBuffer有关的逻辑判断
-            P.z = 0;
-            vec3 normal = vec3(0, 0, 0);
-            vec2 uv = vec2(0, 0);
-            for (int i = 0; i < 3; i++)
-            {
-                P.z += pts[i][2] * bc_screen[i]; //相当于对深度做重心插值
-                uv = uv + uvs[i] * bc_screen[i];
-                normal = normal + normals[i] * bc_screen[i];  //todo：确认一下发现是否是这样用中心插值
-            }
-            normal = normal.normalized();
-            double intensity = std::max(0., normal * lightDir);
-            //intensity = 1.0;
-       
-            if (P.z < zbuffer[int(P.x + P.y * width)])
-            {
-                zbuffer[int(P.x + P.y * width)] = P.z; //开启了深度写入
-                TGAColor color = sample2D(diffuseTexture, uv);
-                //std::cout << color[0] << " " << color[1] << " " << color[2] << std::endl;
-                image.set(P.x, P.y, color);
-            }
-        }
+        uniform_l = light_dir.normalized() * 1.0;
     }
-}
 
-TGAColor red{ 255, 0, 0, 255, 32 };
+    virtual void vertex(const int iface, const int nthvert, vec4& gl_Position)
+    {
+        varying_uv.set_col(nthvert, model.uv(iface, nthvert));
+        varying_nrm.set_col(nthvert, proj<3>((ModelView).invert_transpose() * embed<4>(model.normal(iface, nthvert), 0.)));
+        gl_Position = ModelView * embed<4>(model.vert(iface, nthvert));
+        view_tri.set_col(nthvert, proj<3>(gl_Position));
+        gl_Position = Projection * gl_Position;
+    }
 
+    virtual bool fragment(const vec3 bar, TGAColor& gl_FragColor, int face_index) 
+    {
+        vec3 bn = (varying_nrm * bar).normalized(); // per-vertex normal interpolation
+        vec2 uv = varying_uv * bar; // tex coord interpolation
+        //目前来说光照做在了世界空间当中
+        double diff = std::max(0., bn * uniform_l); // diffuse light intensity
 
-vec3 light_dir(0, 0, -1);
+        TGAColor c = sample2D(model.diffuse(face_index), uv);
+        for (int i : {0, 1, 2})
+        {
+            gl_FragColor[i] = std::min<int>(10 + c[i] * diff, 255);  //10指的是环境光，暂时先写死进去
+            gl_FragColor[i] = c[i];  //todo：暂时先不考虑光照
+        }
+            
+
+        return false; // the pixel is not discarded
+    }
+};
+
 TGAColor sample2D(const TGAImage& texture, vec2 uv)
 {
 	return texture.get(uv.x * texture.width(), uv.y * texture.height());
@@ -73,31 +69,30 @@ TGAColor sample2D(const TGAImage& texture, vec2 uv)
 void RenderModel(TGAImage& framebuffer, std::vector<double>& zbuffer)
 {
     //Model model("obj/african_head.obj", "african_head"); // load an object
-    Model model("obj/RobinFix.obj", "Robin");
-    // Model model("obj/Pamu.obj", "Pamu");
+    //Model model("obj/RobinFix.obj", "Robin");
+    Model model("obj/Pamu.obj", "Pamu");
+    Shader shader(model);
+    
+
+    lookat(eye, center, up); //计算model-view矩阵
+    //viewport(width / 8, height / 8, width * 3 / 4, height * 3 / 4); // build the Viewport matrix
+    viewport(0, 0, width, height); // build the Viewport matrix
+    projection(-1,1,-1,1,0.8,5); // build the Projection matrix
+    
     for (int i = 0; i < model.nfaces(); i++)  // for every triangle
     {
-        vec3 vert_pos[3];
-        vec3 world_coords[3];
-        vec3 screen_coords[3];
-        std::vector<vec2> uvs;
-        std::vector<vec3> normals;
-        
+        vec4 clip_vert[3]; // triangle coordinates (clip coordinates), written by VS, read by FS
         for (int j : {0, 1, 2})
         {
-            vert_pos[j] = model.vert(i, j);
-            screen_coords[j] = vec3(static_cast<int>((vert_pos[j].x + 1.) * width / 2.), static_cast<int>((vert_pos[j].y + 1.) * height / 2. - 290), -vert_pos[j].z * 20); //暂时不考虑空间变换
-            world_coords[j] = vert_pos[j];
-            vec2 uv = model.uv(i, j);
-            uvs.push_back(uv);
-            normals.push_back(model.normal(i, j));
+            shader.vertex(i, j, clip_vert[j]); // call the vertex shader for each triangle vertex
         }
-        triangle(screen_coords, framebuffer, uvs, zbuffer, normals, light_dir, model.diffuse(i));
+        triangle(clip_vert, shader, framebuffer, zbuffer, i);
     }
     framebuffer.write_tga_file("RobinResFinal.tga");
 }
 
-int main(int argc, char** argv) {
+int main(int argc, char** argv)
+{
     TGAImage framebuffer(width, height, TGAImage::RGB); // the output image
     std::vector<double> zbuffer(width * height, std::numeric_limits<double>::max());
     //RenderJustTriangle(framebuffer, zbuffer);
