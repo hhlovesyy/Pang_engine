@@ -1,0 +1,68 @@
+# Blender MTL File: 'None'
+# Material Count: 6
+
+newmtl LaiKaEnKu
+Ns 900.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 0.000000
+d 1.000000
+illum 1
+map_Kd D:\\mihoyo\\Resource\\honkaiStarRailResource\\CharacterModels\\莱卡恩_by_绝区零_d04de74ed596cdb0dbe2da14acf392ea\\tex\\衣.tga
+
+newmtl LaiKaEnMain
+Ns 900.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 0.000000
+d 1.000000
+illum 1
+map_Kd D:\\mihoyo\\Resource\\honkaiStarRailResource\\CharacterModels\\莱卡恩_by_绝区零_d04de74ed596cdb0dbe2da14acf392ea\\tex\\毛发.tga
+
+newmtl LaiKaEnMeijie
+Ns 900.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 0.000000
+d 1.000000
+illum 1
+map_Kd D:\\mihoyo\\Resource\\honkaiStarRailResource\\CharacterModels\\莱卡恩_by_绝区零_d04de74ed596cdb0dbe2da14acf392ea\\tex\\颜.tga
+
+newmtl LaiKaEnMuguang
+Ns 900.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 0.000000
+d 1.000000
+illum 1
+map_Kd D:\\mihoyo\\Resource\\honkaiStarRailResource\\CharacterModels\\莱卡恩_by_绝区零_d04de74ed596cdb0dbe2da14acf392ea\\tex\\颜.tga
+
+newmtl LaiKaEnMuying
+Ns 900.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 0.000000
+d 1.000000
+illum 1
+map_Kd D:\\mihoyo\\Resource\\honkaiStarRailResource\\CharacterModels\\莱卡恩_by_绝区零_d04de74ed596cdb0dbe2da14acf392ea\\tex\\黑.jpg
+
+newmtl LaiKaEnTui
+Ns 900.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 0.000000
+d 1.000000
+illum 1
+map_Kd D:\\mihoyo\\Resource\\honkaiStarRailResource\\CharacterModels\\莱卡恩_by_绝区零_d04de74ed596cdb0dbe2da14acf392ea\\tex\\腿甲.tga
