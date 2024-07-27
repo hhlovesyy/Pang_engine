@@ -9,6 +9,8 @@ struct IShader
 {
     static TGAColor sample2D(const TGAImage& img, vec2& uvf) 
     {
+        if(uvf[0] < 0) uvf[0] = 1 + uvf[0]; //有些神奇的插件会导致uv坐标为负数，这里做一下修正
+        if(uvf[1] < 0) uvf[1] = 1 + uvf[1];
         return img.get(uvf[0] * img.width(), uvf[1] * img.height());
     }
     virtual bool fragment(const vec3 bar, TGAColor& color, int faceIndex) = 0;

@@ -64,6 +64,9 @@ void triangle(const vec4 clip_verts[3], IShader& shader, TGAImage& image, std::v
     {
         for (int y = std::max(bboxmin[1], 0); y <= std::min(bboxmax[1], image.height() - 1); y++) 
         {
+            //先启动一下4倍SSAA玩一下
+            //std::cout << x <<" "<< y << std::endl; x和y都是整数
+
             //refs:https://blog.csdn.net/Motarookie/article/details/124284471
             vec3 bc_screen = barycentric(pts2, { static_cast<double>(x), static_cast<double>(y) });
             //bc_screen 是屏幕空间计算出来的重心坐标，也就是链接中的α'，β'，γ'
