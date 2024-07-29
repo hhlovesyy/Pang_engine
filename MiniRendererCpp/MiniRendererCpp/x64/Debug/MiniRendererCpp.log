@@ -1,13 +1,4 @@
-﻿  geometry.cpp
-  imgui_impl_opengl3.cpp
-  imgui_impl_win32.cpp
-  imgui.cpp
-  imgui_demo.cpp
-  imgui_draw.cpp
-  imgui_tables.cpp
-  imgui_widgets.cpp
-  imgui_stdlib.cpp
-  main.cpp
+﻿  main.cpp
 D:\mihoyo\LanguageLearning\cpp\MyLearnTinyRenderer0723\Pang_engine\MiniRendererCpp\MiniRendererCpp\our_gl.h(15,53): warning C4244: “参数”: 从“double”转换到“const int”，可能丢失数据
   (编译源文件“main.cpp”)
   
@@ -19,26 +10,7 @@ D:\mihoyo\LanguageLearning\cpp\MyLearnTinyRenderer0723\Pang_engine\MiniRendererC
 D:\mihoyo\LanguageLearning\cpp\MyLearnTinyRenderer0723\Pang_engine\MiniRendererCpp\MiniRendererCpp\main.cpp(83,48): warning C4244:         [
 D:\mihoyo\LanguageLearning\cpp\MyLearnTinyRenderer0723\Pang_engine\MiniRendererCpp\MiniRendererCpp\main.cpp(83,48): warning C4244:             _Ty=int
 D:\mihoyo\LanguageLearning\cpp\MyLearnTinyRenderer0723\Pang_engine\MiniRendererCpp\MiniRendererCpp\main.cpp(83,48): warning C4244:         ]
-D:\mihoyo\LanguageLearning\cpp\MyLearnTinyRenderer0723\Pang_engine\MiniRendererCpp\MiniRendererCpp\main.cpp(95,50): warning C4244: “参数”: 从“double”转换到“const int”，可能丢失数据
-D:\mihoyo\LanguageLearning\cpp\MyLearnTinyRenderer0723\Pang_engine\MiniRendererCpp\MiniRendererCpp\main.cpp(95,26): warning C4244: “参数”: 从“double”转换到“const int”，可能丢失数据
-  model.cpp
-D:\mihoyo\LanguageLearning\cpp\MyLearnTinyRenderer0723\Pang_engine\MiniRendererCpp\MiniRendererCpp\model.cpp(40,52): warning C4267: “参数”: 从“size_t”转换到“_Ty”，可能丢失数据
-D:\mihoyo\LanguageLearning\cpp\MyLearnTinyRenderer0723\Pang_engine\MiniRendererCpp\MiniRendererCpp\model.cpp(40,52): warning C4267:         with
-D:\mihoyo\LanguageLearning\cpp\MyLearnTinyRenderer0723\Pang_engine\MiniRendererCpp\MiniRendererCpp\model.cpp(40,52): warning C4267:         [
-D:\mihoyo\LanguageLearning\cpp\MyLearnTinyRenderer0723\Pang_engine\MiniRendererCpp\MiniRendererCpp\model.cpp(40,52): warning C4267:             _Ty=int
-D:\mihoyo\LanguageLearning\cpp\MyLearnTinyRenderer0723\Pang_engine\MiniRendererCpp\MiniRendererCpp\model.cpp(40,52): warning C4267:         ]
-D:\mihoyo\LanguageLearning\cpp\MyLearnTinyRenderer0723\Pang_engine\MiniRendererCpp\MiniRendererCpp\model.cpp(63,22): warning C4267: “return”: 从“size_t”转换到“int”，可能丢失数据
-D:\mihoyo\LanguageLearning\cpp\MyLearnTinyRenderer0723\Pang_engine\MiniRendererCpp\MiniRendererCpp\model.cpp(67,29): warning C4267: “return”: 从“size_t”转换到“int”，可能丢失数据
-  our_gl.cpp
-D:\mihoyo\LanguageLearning\cpp\MyLearnTinyRenderer0723\Pang_engine\MiniRendererCpp\MiniRendererCpp\our_gl.h(15,53): warning C4244: “参数”: 从“double”转换到“const int”，可能丢失数据
-  (编译源文件“our_gl.cpp”)
-  
-D:\mihoyo\LanguageLearning\cpp\MyLearnTinyRenderer0723\Pang_engine\MiniRendererCpp\MiniRendererCpp\our_gl.h(15,31): warning C4244: “参数”: 从“double”转换到“const int”，可能丢失数据
-  (编译源文件“our_gl.cpp”)
-  
-D:\mihoyo\LanguageLearning\cpp\MyLearnTinyRenderer0723\Pang_engine\MiniRendererCpp\MiniRendererCpp\our_gl.cpp(60,16): warning C4244: “初始化”: 从“double”转换到“float”，可能丢失数据
-D:\mihoyo\LanguageLearning\cpp\MyLearnTinyRenderer0723\Pang_engine\MiniRendererCpp\MiniRendererCpp\our_gl.cpp(108,32): warning C4244: “初始化”: 从“double”转换到“float”，可能丢失数据
-  tgaimage.cpp
-  正在生成代码...
+D:\mihoyo\LanguageLearning\cpp\MyLearnTinyRenderer0723\Pang_engine\MiniRendererCpp\MiniRendererCpp\main.cpp(95,53): warning C4244: “参数”: 从“double”转换到“const int”，可能丢失数据
+D:\mihoyo\LanguageLearning\cpp\MyLearnTinyRenderer0723\Pang_engine\MiniRendererCpp\MiniRendererCpp\main.cpp(95,29): warning C4244: “参数”: 从“double”转换到“const int”，可能丢失数据
   LINK : 没有找到 D:\mihoyo\LanguageLearning\cpp\MyLearnTinyRenderer0723\Pang_engine\MiniRendererCpp\x64\Debug\MiniRendererCpp.exe 或上一个增量链接没有生成它；正在执行完全链接
   MiniRendererCpp.vcxproj -> D:\mihoyo\LanguageLearning\cpp\MyLearnTinyRenderer0723\Pang_engine\MiniRendererCpp\x64\Debug\MiniRendererCpp.exe
