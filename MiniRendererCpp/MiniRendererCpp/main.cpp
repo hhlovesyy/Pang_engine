@@ -6,8 +6,8 @@
 #include "geometry.h"
 #include "our_gl.h"
 
-constexpr int width = 6400; // output image size
-constexpr int height = 6400;
+constexpr int width = 800; // output image size
+constexpr int height = 800;
 
 vec3 light_dir{ 0,0,1 }; // light source，指的是指向光源的方向
 const vec3       eye{ 0,0,0.8 }; // camera position
@@ -110,7 +110,7 @@ void WriteZBufferToFile(std::vector<double>& zbuffer, std::string& filename)
 	zbuffer_image.write_tga_file(filename);
 }
 
-void RenderModel(TGAImage& framebuffer, std::vector<double>& zbuffer)
+void RenderModel(TGAImage& framebuffer, std::vector<double>& zbuffer,std::vector<double>& MSAA_zbuffer, std::vector<TGAColor >& fram_buf_ssaa,std::vector<double>& depth_buf_ssaa)
 {
     //Model model("obj/african_head.obj", "african_head"); // load an object
     //Model model("obj/RobinFix.obj", "Robin");
@@ -122,6 +122,10 @@ void RenderModel(TGAImage& framebuffer, std::vector<double>& zbuffer)
     {
         TGAImage framebuffer(width, height, TGAImage::RGB); // the output image
         std::vector<double> zbuffer(width * height, std::numeric_limits<double>::max());
+        //MSAA_zbuffer
+        std::vector<double> MSAA_zbuffer(width * height * 4, std::numeric_limits<double>::max());
+
+
         lookat(eye_new[index], center, up); //计算model-view矩阵
         //viewport(width / 8, height / 8, width * 3 / 4, height * 3 / 4); // build the Viewport matrix
         viewport(0, 0, width, height); // build the Viewport matrix
@@ -141,7 +145,7 @@ void RenderModel(TGAImage& framebuffer, std::vector<double>& zbuffer)
                 shader.vertex(i, j, clip_vert[j], discard, index); // call the vertex shader for each triangle vertex
             }
             if (discard) continue;
-            triangle(clip_vert, shader, framebuffer, zbuffer, i);
+            triangle(clip_vert, shader, framebuffer, zbuffer,MSAA_zbuffer, fram_buf_ssaa,depth_buf_ssaa,i); // the core rasterizer
         }
         std::string name = std::to_string(index) + "RobinResFinal.tga";
         std::string zbuffer_name = std::to_string(index) + "RobinZBuffer.tga";
@@ -155,7 +159,13 @@ int main(int argc, char** argv)
 {
     TGAImage framebuffer(width, height, TGAImage::RGB); // the output image
     std::vector<double> zbuffer(width * height, std::numeric_limits<double>::max());
+    //MSAA_zbuffer
+    int ssaa_sample = 3;
+    int ssaa_2 = ssaa_sample * ssaa_sample;
+    std::vector<double> MSAA_zbuffer(width * height* ssaa_2, std::numeric_limits<double>::max());
+    std::vector<TGAColor > fram_buf_ssaa(width * height * ssaa_2, TGAColor{ 0,0,0,0 });
+    std::vector<double> depth_buf_ssaa(width * height * ssaa_2, std::numeric_limits<double>::max());
     //RenderJustTriangle(framebuffer, zbuffer);
-    RenderModel(framebuffer, zbuffer);
+    RenderModel(framebuffer, zbuffer, MSAA_zbuffer, fram_buf_ssaa, depth_buf_ssaa);
     return 0;
 }

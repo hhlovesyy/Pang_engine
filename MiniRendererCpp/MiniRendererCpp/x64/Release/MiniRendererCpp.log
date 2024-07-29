@@ -1,6 +1,6 @@
 ﻿  main.cpp
-D:\MRenderer\PangEngine\MiniRendererCpp\MiniRendererCpp\our_gl.h(14,53): warning C4244: “参数”: 从“double”转换到“const int”，可能丢失数据
-D:\MRenderer\PangEngine\MiniRendererCpp\MiniRendererCpp\our_gl.h(14,31): warning C4244: “参数”: 从“double”转换到“const int”，可能丢失数据
+D:\MRenderer\PangEngine\MiniRendererCpp\MiniRendererCpp\our_gl.h(17,53): warning C4244: “参数”: 从“double”转换到“const int”，可能丢失数据
+D:\MRenderer\PangEngine\MiniRendererCpp\MiniRendererCpp\our_gl.h(17,31): warning C4244: “参数”: 从“double”转换到“const int”，可能丢失数据
 D:\MRenderer\PangEngine\MiniRendererCpp\MiniRendererCpp\main.cpp(79,48): warning C4244: “参数”: 从“double”转换到“const _Ty”，可能丢失数据
 D:\MRenderer\PangEngine\MiniRendererCpp\MiniRendererCpp\main.cpp(79,48): warning C4244:         with
 D:\MRenderer\PangEngine\MiniRendererCpp\MiniRendererCpp\main.cpp(79,48): warning C4244:         [
@@ -8,8 +8,15 @@ D:\MRenderer\PangEngine\MiniRendererCpp\MiniRendererCpp\main.cpp(79,48): warning
 D:\MRenderer\PangEngine\MiniRendererCpp\MiniRendererCpp\main.cpp(79,48): warning C4244:         ]
 D:\MRenderer\PangEngine\MiniRendererCpp\MiniRendererCpp\main.cpp(91,50): warning C4244: “参数”: 从“double”转换到“const int”，可能丢失数据
 D:\MRenderer\PangEngine\MiniRendererCpp\MiniRendererCpp\main.cpp(91,26): warning C4244: “参数”: 从“double”转换到“const int”，可能丢失数据
+  our_gl.cpp
+D:\MRenderer\PangEngine\MiniRendererCpp\MiniRendererCpp\our_gl.h(17,53): warning C4244: “参数”: 从“double”转换到“const int”，可能丢失数据
+D:\MRenderer\PangEngine\MiniRendererCpp\MiniRendererCpp\our_gl.h(17,31): warning C4244: “参数”: 从“double”转换到“const int”，可能丢失数据
+D:\MRenderer\PangEngine\MiniRendererCpp\MiniRendererCpp\our_gl.cpp(136,37): warning C4244: “初始化”: 从“double”转换到“float”，可能丢失数据
+D:\MRenderer\PangEngine\MiniRendererCpp\MiniRendererCpp\our_gl.cpp(137,37): warning C4244: “初始化”: 从“double”转换到“float”，可能丢失数据
+D:\MRenderer\PangEngine\MiniRendererCpp\MiniRendererCpp\our_gl.cpp(140,44): warning C4244: “初始化”: 从“double”转换到“float”，可能丢失数据
+D:\MRenderer\PangEngine\MiniRendererCpp\MiniRendererCpp\our_gl.cpp(225,36): warning C4244: “初始化”: 从“double”转换到“float”，可能丢失数据
   正在生成代码
-  1 of 697 functions ( 0.1%) were compiled, the rest were copied from previous compilation.
+  7 of 731 functions ( 1.0%) were compiled, the rest were copied from previous compilation.
     0 functions were new in current compilation
     1 functions had inline decision re-evaluated but remain unchanged
   已完成代码的生成

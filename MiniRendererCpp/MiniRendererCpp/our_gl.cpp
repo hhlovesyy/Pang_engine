@@ -1,5 +1,7 @@
 #include "our_gl.h"
 
+bool g_ssaaEnabled = true;
+
 mat<4, 4> ModelView;
 mat<4, 4> Viewport;
 mat<4, 4> Projection;
@@ -40,7 +42,62 @@ vec3 barycentric(vec2* pts, vec2 P)  // pts[3] and P are in screen coordinates
     return vec3(1.f - (u.x + u.y) / u.z, u.y / u.z, u.x / u.z);
 }
 
-void triangle(const vec4 clip_verts[3], IShader& shader, TGAImage& image, std::vector<double>& zbuffer, int face_index)
+#include <random>
+
+// 均匀采样函数，返回一个介于0和1之间的随机数
+double uniformSample()
+{
+    static std::random_device rd;
+    static std::mt19937 gen(rd());
+    static std::uniform_real_distribution<double> dis(0.0, 1.0);
+    return dis(gen);
+}
+
+// 在每个像素内均匀采样n个次像素
+void ssaa(const int n, TGAImage& image)
+{
+    for (int x = 0; x < image.width(); x++)
+    {
+        for (int y = 0; y < image.height(); y++)
+        {
+            double rgb[3] = { 0.0, 0.0, 0.0 };
+            for (int i = 0; i < n; i++)
+            {
+                // 在每个像素内均匀采样
+                double offsetX = (i % 2 + uniformSample()) / n;
+                double offsetY = (i / 2 + uniformSample()) / n;
+                double sampleX = x + offsetX;
+                double sampleY = y + offsetY;
+
+                // 计算次像素的颜色值
+                TGAColor color;
+                // 根据次像素的坐标sampleX和sampleY计算颜色值
+                // ...
+                // 将次像素的颜色值累加到rgb数组中
+                rgb[0] += color.bgra[0];
+                rgb[1] += color.bgra[1];
+                rgb[2] += color.bgra[2];
+            }
+
+            // 计算平均颜色值
+            rgb[0] /= n;
+            rgb[1] /= n;
+            rgb[2] /= n;
+
+            // 设置像素的颜色值
+            //TGAColor finalColor(static_cast<std::uint8_t>(rgb[0]), static_cast<std::uint8_t>(rgb[1]), static_cast<std::uint8_t>(rgb[2]));
+            TGAColor finalColor;
+            finalColor.bgra[0] = static_cast<std::uint8_t>(rgb[0]);
+            finalColor.bgra[1] = static_cast<std::uint8_t>(rgb[1]);
+            finalColor.bgra[2] = static_cast<std::uint8_t>(rgb[2]);
+            image.set(x, y, finalColor);
+        }
+    }
+}
+
+
+
+void triangle(const vec4 clip_verts[3], IShader& shader, TGAImage& image, std::vector<double>& zbuffer, std::vector<double>& MSAA_zbuffer, std::vector<TGAColor >& fram_buf_ssaa, std::vector<double>& depth_buf_ssaa, int face_index)
 {
     //clip_verts是NDC空间的三角形顶点坐标,还没有做透视除法
     
@@ -51,46 +108,144 @@ void triangle(const vec4 clip_verts[3], IShader& shader, TGAImage& image, std::v
     int bboxmin[2] = { image.width() - 1, image.height() - 1 };
     int bboxmax[2] = { 0, 0 };
     for (int i = 0; i < 3; i++)
-        for (int j = 0; j < 2; j++) {
+        for (int j = 0; j < 2; j++) 
+        {
             bboxmin[j] = std::min(bboxmin[j], static_cast<int>(pts2[i][j]));
             bboxmax[j] = std::max(bboxmax[j], static_cast<int>(pts2[i][j]));
         }
 #pragma omp parallel for
-    for (int x = std::max(bboxmin[0], 0); x <= std::min(bboxmax[0], image.width() - 1); x++)
+    if (g_ssaaEnabled)
     {
-        for (int y = std::max(bboxmin[1], 0); y <= std::min(bboxmax[1], image.height() - 1); y++) 
+        /*depth_buf_ssaa.resize(image.width() * image.height() * 4, std::numeric_limits<double>::max());
+        fram_buf_ssaa.resize(image.width() * image.height() * 4, TGAColor{ 0, 0, 0, 0, 4 });*/
+
+        int ssaa_sample = 3;
+        float sampling_period = 1.0f / ssaa_sample;
+        //实现ssaa
+        for (int x = std::max(bboxmin[0], 0); x <= std::min(bboxmax[0], image.width() - 1); x++)
         {
-            //先启动一下4倍SSAA玩一下
-            //std::cout << x <<" "<< y << std::endl; x和y都是整数
+            for (int y = std::max(bboxmin[1], 0); y <= std::min(bboxmax[1], image.height() - 1); y++)
+            {
+                //先启动一下4倍SSAA玩一下
+				//std::cout << x <<" "<< y << std::endl; x和y都是整数
+				double rgb[3] = { 0.0, 0.0, 0.0 };
+                for (int i = 0; i < ssaa_sample; i++)
+                {
+                    for (int j = 0; j < ssaa_sample; j++)
+                    {
+                        // 中心点
+                        float new_x = x + (i + 0.5) * sampling_period;
+                        float new_y = y + (j + 0.5) * sampling_period;
+                        vec3 bc_screen = barycentric(pts2, { new_x, new_y });
+                        if (bc_screen.x < 0 || bc_screen.y < 0 || bc_screen.z < 0) continue;
+                        float w_reciprocal = 1.0 / (bc_screen.x / clip_verts[0][3] + bc_screen.y / clip_verts[1][3] + bc_screen.z / clip_verts[2][3]);
+                        // 但是这里又用了任意属性插值公式， 并且IA取的v[0].z()
+                        vec3  bc_clip = w_reciprocal * vec3(bc_screen.x / clip_verts[0][3], bc_screen.y / clip_verts[1][3], bc_screen.z / clip_verts[2][3]);
+                        //std::cout<< bc_clip.x << " " << bc_clip.y << " " << bc_clip.z << " "<< (bc_clip.x + bc_clip.y + bc_clip.z) << std::endl;
+                        double frag_depth = vec3{ clip_verts[0][2], clip_verts[1][2], clip_verts[2][2] } *bc_clip;
+                        bool shouldClipInFragment = false;
+                        //        for (int i = 0; i < 3; i++)  //trick:片元着色器暴力裁剪
+                        //        {
+                        //            //如果不在NDC空间范围内，就不渲染了
+                        //            if (!(pts[i][0] >= -1 && pts[i][0] <= 1) || !(pts[i][1] >= -1 && pts[i][1] <= 1) || !(pts[i][2] >= -1 && pts[i][2] <= 1))
+                        //            {
+                        //                shouldClipInFragment = true;
+                        //                break;
+                                    //}
+                        //        }
+                                //shouldClipInFragment = false;
+                        
 
-            //refs:https://blog.csdn.net/Motarookie/article/details/124284471
-            vec3 bc_screen = barycentric(pts2, { static_cast<double>(x), static_cast<double>(y) });
-            if (bc_screen.x < 0 || bc_screen.y < 0 || bc_screen.z < 0) continue;
-            
-            //bc_screen 是屏幕空间计算出来的重心坐标，也就是链接中的α'，β'，γ'
-            ////bc_clip相当于重新计算之后的正确的重心坐标，这里比较绕，一定要对应给的链接中的公式来看
-            float w_reciprocal = 1.0 / (bc_screen.x / clip_verts[0][3] + bc_screen.y / clip_verts[1][3] + bc_screen.z / clip_verts[2][3]);
-            // 但是这里又用了任意属性插值公式， 并且IA取的v[0].z()
-            vec3  bc_clip = w_reciprocal * vec3(bc_screen.x / clip_verts[0][3] , bc_screen.y /clip_verts[1][3] , bc_screen.z / clip_verts[2][3]);
-            //std::cout<< bc_clip.x << " " << bc_clip.y << " " << bc_clip.z << " "<< (bc_clip.x + bc_clip.y + bc_clip.z) << std::endl;
-            double frag_depth = vec3{ clip_verts[0][2], clip_verts[1][2], clip_verts[2][2] } * bc_clip;
-            bool shouldClipInFragment = false;  
-    //        for (int i = 0; i < 3; i++)  //trick:片元着色器暴力裁剪
-    //        {
-    //            //如果不在NDC空间范围内，就不渲染了
-    //            if (!(pts[i][0] >= -1 && pts[i][0] <= 1) || !(pts[i][1] >= -1 && pts[i][1] <= 1) || !(pts[i][2] >= -1 && pts[i][2] <= 1))
-    //            {
-    //                shouldClipInFragment = true;
-    //                break;
-				//}
-    //        }
-            //shouldClipInFragment = false;
-            if(shouldClipInFragment || frag_depth > zbuffer[x + y * image.width()]) continue;
 
-            TGAColor color;
-            if (shader.fragment(bc_clip, color, face_index)) continue; // fragment shader can discard current fragment
-            zbuffer[x + y * image.width()] = frag_depth;
-            image.set(x, y, color);
+                        // 左下角的点
+                        int depth_buf_x, depth_buf_y;
+                        depth_buf_x = x * ssaa_sample + i;
+                        depth_buf_y = y * ssaa_sample + j;
+                        if (shouldClipInFragment || frag_depth > depth_buf_ssaa[depth_buf_x + depth_buf_y * image.width()* ssaa_sample]) continue;
+
+                        TGAColor color;
+                        if (shader.fragment(bc_clip, color, face_index)) continue; // fragment shader can discard current fragment 如果返回true，就不渲染这个像素
+                        depth_buf_ssaa[depth_buf_x + depth_buf_y * image.width()* ssaa_sample] = frag_depth;
+                        //image.set(x, y, color);
+                        //新建一个颜色数组，用来存储颜色值
+
+                        fram_buf_ssaa[depth_buf_x + depth_buf_y * image.width() * ssaa_sample] = color;
+                    }
+                }
+
+                
+            }
+
+        }
+        // Down Sample
+        for (int x = std::max(bboxmin[0], 0); x <= std::min(bboxmax[0], image.width() - 1); x++)
+        {
+            for (int y = std::max(bboxmin[1], 0); y <= std::min(bboxmax[1], image.height() - 1); y++)
+            {
+                double rgb[3] = { 0.0, 0.0, 0.0 };
+				for (int i = 0; i < ssaa_sample; i++)
+				{
+					for (int j = 0; j < ssaa_sample; j++)
+					{
+						int depth_buf_x, depth_buf_y;
+						depth_buf_x = x * ssaa_sample + i;
+						depth_buf_y = y * ssaa_sample + j;
+						rgb[0] += fram_buf_ssaa[depth_buf_x + depth_buf_y * image.width() * ssaa_sample].bgra[0];
+						rgb[1] += fram_buf_ssaa[depth_buf_x + depth_buf_y * image.width() * ssaa_sample].bgra[1];
+						rgb[2] += fram_buf_ssaa[depth_buf_x + depth_buf_y * image.width() * ssaa_sample].bgra[2];
+					}
+				}
+				rgb[0] /= ssaa_sample * ssaa_sample;
+				rgb[1] /= ssaa_sample * ssaa_sample;
+				rgb[2] /= ssaa_sample * ssaa_sample;
+				TGAColor finalColor;
+				finalColor.bgra[0] = static_cast<std::uint8_t>(rgb[0]);
+				finalColor.bgra[1] = static_cast<std::uint8_t>(rgb[1]);
+				finalColor.bgra[2] = static_cast<std::uint8_t>(rgb[2]);
+				image.set(x, y, finalColor);
+            }
+        }
+    
+    }
+    
+    else
+    {
+        for (int x = std::max(bboxmin[0], 0); x <= std::min(bboxmax[0], image.width() - 1); x++)
+        {
+            for (int y = std::max(bboxmin[1], 0); y <= std::min(bboxmax[1], image.height() - 1); y++)
+            {
+                //先启动一下4倍SSAA玩一下
+                //std::cout << x <<" "<< y << std::endl; x和y都是整数
+
+                //refs:https://blog.csdn.net/Motarookie/article/details/124284471
+                vec3 bc_screen = barycentric(pts2, { static_cast<double>(x), static_cast<double>(y) });
+                if (bc_screen.x < 0 || bc_screen.y < 0 || bc_screen.z < 0) continue;
+
+                //bc_screen 是屏幕空间计算出来的重心坐标，也就是链接中的α'，β'，γ'
+                ////bc_clip相当于重新计算之后的正确的重心坐标，这里比较绕，一定要对应给的链接中的公式来看
+                float w_reciprocal = 1.0 / (bc_screen.x / clip_verts[0][3] + bc_screen.y / clip_verts[1][3] + bc_screen.z / clip_verts[2][3]);
+                // 但是这里又用了任意属性插值公式， 并且IA取的v[0].z()
+                vec3  bc_clip = w_reciprocal * vec3(bc_screen.x / clip_verts[0][3], bc_screen.y / clip_verts[1][3], bc_screen.z / clip_verts[2][3]);
+                //std::cout<< bc_clip.x << " " << bc_clip.y << " " << bc_clip.z << " "<< (bc_clip.x + bc_clip.y + bc_clip.z) << std::endl;
+                double frag_depth = vec3{ clip_verts[0][2], clip_verts[1][2], clip_verts[2][2] } *bc_clip;
+                bool shouldClipInFragment = false;
+                //        for (int i = 0; i < 3; i++)  //trick:片元着色器暴力裁剪
+                //        {
+                //            //如果不在NDC空间范围内，就不渲染了
+                //            if (!(pts[i][0] >= -1 && pts[i][0] <= 1) || !(pts[i][1] >= -1 && pts[i][1] <= 1) || !(pts[i][2] >= -1 && pts[i][2] <= 1))
+                //            {
+                //                shouldClipInFragment = true;
+                //                break;
+                            //}
+                //        }
+                        //shouldClipInFragment = false;
+                if (shouldClipInFragment || frag_depth > zbuffer[x + y * image.width()]) continue;
+
+                TGAColor color;
+                if (shader.fragment(bc_clip, color, face_index)) continue; // fragment shader can discard current fragment 如果返回true，就不渲染这个像素
+                zbuffer[x + y * image.width()] = frag_depth;
+                image.set(x, y, color);
+            }
         }
     }
 }
