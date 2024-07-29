@@ -113,9 +113,9 @@ void WriteZBufferToFile(std::vector<double>& zbuffer, std::string& filename)
 void RenderModel(TGAImage& framebuffer, std::vector<double>& zbuffer)
 {
     //Model model("obj/african_head.obj", "african_head"); // load an object
-    Model model("obj/RobinFix.obj", "Robin");
+    //Model model("obj/RobinFix.obj", "Robin");
     //Model model("obj/Pamu.obj", "Pamu");
-    //Model model("obj/LaiKaEn.obj", "Pamu");
+    Model model("obj/LaiKaEn.obj", "Pamu");
     Shader shader(model);
     
     for (int index = 0; index < 2; index++)  //不同角度渲染10张图，看看效果
