@@ -6,6 +6,7 @@ extern bool g_ssaaEnabled;
 
 void viewport(const int x, const int y, const int w, const int h);
 void projection(double left, double right, double bottom, double up, double near, double far); 
+void projection(double fovy, double aspect, double near, double far);
 void lookat(const vec3 eye, const vec3 center, const vec3 up);
 
 struct IShader 
