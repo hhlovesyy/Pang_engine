@@ -30,6 +30,13 @@ void projection(double left, double right, double bottom, double top, double nea
 					{0, 0, -1, 0} } };
 }
 
+void projection(double fovy, double aspect, double near, double far) //fovy in degree
+{
+	double top = tan(fovy * 3.14159265 / 360) * near;
+	double right = top * aspect;
+	projection(-right, right, -top, top, near, far);
+}
+
 vec3 barycentric(vec2* pts, vec2 P)  // pts[3] and P are in screen coordinates
 {
     vec3 u = cross(vec3(pts[2][0] - pts[0][0], pts[1][0] - pts[0][0], pts[0][0] - P[0]), vec3(pts[2][1] - pts[0][1], pts[1][1] - pts[0][1], pts[0][1] - P[1]));
@@ -40,6 +47,30 @@ vec3 barycentric(vec2* pts, vec2 P)  // pts[3] and P are in screen coordinates
     return vec3(1.f - (u.x + u.y) / u.z, u.y / u.z, u.x / u.z);
 }
 
+enum Orientation 
+{
+    CLOCKWISE,
+    COUNTERCLOCKWISE,
+    COLLINEAR  //共线
+};
+
+Orientation checkOrientation(const vec2& A, const vec2& B, const vec2& C)
+{
+    // 计算有向面积
+    float area = (B.x - A.x) * (C.y - A.y) - (C.x - A.x) * (B.y - A.y);
+
+    if (area > 0) {
+        return COUNTERCLOCKWISE; // 逆时针
+    }
+    else if (area < 0) {
+        return CLOCKWISE; // 顺时针
+    }
+    else {
+        return COLLINEAR; // 共线
+    }
+}
+
+
 void triangle(const vec4 clip_verts[3], IShader& shader, TGAImage& image, std::vector<double>& zbuffer, int face_index)
 {
     //clip_verts是NDC空间的三角形顶点坐标,还没有做透视除法
@@ -48,6 +79,11 @@ void triangle(const vec4 clip_verts[3], IShader& shader, TGAImage& image, std::v
     vec4 pts[3] = { clip_verts[0] / clip_verts[0][3], clip_verts[1] / clip_verts[1][3], clip_verts[2] / clip_verts[2][3] };  // triangle screen coordinates before persp. division
     vec4 tmpPts2[3] = { Viewport * pts[0],    Viewport * pts[1],    Viewport * pts[2] };  // triangle screen coordinates after  perps. division
     vec2 pts2[3] = { proj<2>(tmpPts2[0]), proj<2>(tmpPts2[1]), proj<2>(tmpPts2[2]) };  // triangle screen coordinates after  perps. division
+    
+    // 判断顺序
+    Orientation result = checkOrientation(pts2[0], pts2[1], pts2[2]);
+    if(result == COLLINEAR || result == CLOCKWISE) return;
+    
     int bboxmin[2] = { image.width() - 1, image.height() - 1 };
     int bboxmax[2] = { 0, 0 };
     for (int i = 0; i < 3; i++)
