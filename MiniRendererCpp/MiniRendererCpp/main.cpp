@@ -10,8 +10,8 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 
-constexpr int width = 2048; // output image size
-constexpr int height = 2048;
+constexpr int width = 800; // output image size
+constexpr int height = 800;
 
 vec3 light_dir{ 0,0,1 }; // light source，指的是指向光源的方向
 const vec3       eye{ 0,0,0.8 }; // camera position
@@ -141,8 +141,8 @@ void RenderModel()
         std::vector<double> zbuffer(width * height, std::numeric_limits<double>::max());
         //MSAA_zbuffer
         std::vector<double> MSAA_zbuffer(width * height * ssaa_2, std::numeric_limits<double>::max());
-        std::vector<TGAColor > fram_buf_ssaa(width * height * ssaa_2, TGAColor{ 0,0,0,0 });
-        std::vector<double> depth_buf_ssaa(width * height * ssaa_2, std::numeric_limits<double>::max());
+        std::vector<TGAColor > SSAA_framebuffer(width * height * ssaa_2, TGAColor{ 0,0,0,0 });
+        std::vector<double> SSAA_zbuffer(width * height * ssaa_2, std::numeric_limits<double>::max());
 
         lookat(calculate_around_eyepos(index), center, up); //计算model-view矩阵
         //viewport(width / 8, height / 8, width * 3 / 4, height * 3 / 4); // build the Viewport matrix
@@ -163,7 +163,7 @@ void RenderModel()
                 shader.vertex(i, j, clip_vert[j], discard, index); // call the vertex shader for each triangle vertex
             }
             if (discard) continue;
-            triangle(clip_vert, shader, framebuffer, zbuffer,MSAA_zbuffer, fram_buf_ssaa,depth_buf_ssaa,i); // the core rasterizer
+            triangle(clip_vert, shader, framebuffer, zbuffer,MSAA_zbuffer, SSAA_framebuffer,SSAA_zbuffer,i); // the core rasterizer
         }
         std::string name = std::to_string(index) + "RobinResFinal.tga";
         std::string zbuffer_name = std::to_string(index) + "RobinZBuffer.tga";
@@ -191,8 +191,8 @@ void main_renderer()
     int ssaa_sample = 3;
     int ssaa_2 = ssaa_sample * ssaa_sample;
     std::vector<double> MSAA_zbuffer(width * height* ssaa_2, std::numeric_limits<double>::max());
-    std::vector<TGAColor > fram_buf_ssaa(width * height * ssaa_2, TGAColor{ 0,0,0,0 });
-    std::vector<double> depth_buf_ssaa(width * height * ssaa_2, std::numeric_limits<double>::max());
+    std::vector<TGAColor > SSAA_framebuffer(width * height * ssaa_2, TGAColor{ 0,0,0,0 });
+    std::vector<double> SSAA_zbuffer(width * height * ssaa_2, std::numeric_limits<double>::max());
     //RenderJustTriangle(framebuffer, zbuffer);
     RenderModel();
 }

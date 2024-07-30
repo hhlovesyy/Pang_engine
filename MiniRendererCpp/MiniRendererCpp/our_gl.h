@@ -20,4 +20,4 @@ struct IShader
     virtual bool fragment(const vec3 bar, TGAColor& color, int faceIndex) = 0;
 };
 
-void triangle(const vec4 clip_verts[3], IShader& shader, TGAImage& image, std::vector<double>& zbuffer, std::vector<double>& MSAA_zbuffer, std::vector<TGAColor >& fram_buf_ssaa, std::vector<double>& depth_buf_ssaa, int face_index);
+void triangle(const vec4 clip_verts[3], IShader& shader, TGAImage& image, std::vector<double>& zbuffer, std::vector<double>& MSAA_zbuffer, std::vector<TGAColor >& SSAA_framebuffer, std::vector<double>& SSAA_zbuffer, int face_index);

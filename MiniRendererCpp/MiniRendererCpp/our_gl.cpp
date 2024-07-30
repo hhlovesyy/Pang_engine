@@ -60,48 +60,6 @@ double uniformSample()
     return dis(gen);
 }
 
-// 在每个像素内均匀采样n个次像素
-void ssaa(const int n, TGAImage& image)
-{
-    for (int x = 0; x < image.width(); x++)
-    {
-        for (int y = 0; y < image.height(); y++)
-        {
-            double rgb[3] = { 0.0, 0.0, 0.0 };
-            for (int i = 0; i < n; i++)
-            {
-                // 在每个像素内均匀采样
-                double offsetX = (i % 2 + uniformSample()) / n;
-                double offsetY = (i / 2 + uniformSample()) / n;
-                double sampleX = x + offsetX;
-                double sampleY = y + offsetY;
-
-                // 计算次像素的颜色值
-                TGAColor color;
-                // 根据次像素的坐标sampleX和sampleY计算颜色值
-                // ...
-                // 将次像素的颜色值累加到rgb数组中
-                rgb[0] += color.bgra[0];
-                rgb[1] += color.bgra[1];
-                rgb[2] += color.bgra[2];
-            }
-
-            // 计算平均颜色值
-            rgb[0] /= n;
-            rgb[1] /= n;
-            rgb[2] /= n;
-
-            // 设置像素的颜色值
-            //TGAColor finalColor(static_cast<std::uint8_t>(rgb[0]), static_cast<std::uint8_t>(rgb[1]), static_cast<std::uint8_t>(rgb[2]));
-            TGAColor finalColor;
-            finalColor.bgra[0] = static_cast<std::uint8_t>(rgb[0]);
-            finalColor.bgra[1] = static_cast<std::uint8_t>(rgb[1]);
-            finalColor.bgra[2] = static_cast<std::uint8_t>(rgb[2]);
-            image.set(x, y, finalColor);
-        }
-    }
-}
-
 enum Orientation 
 {
     CLOCKWISE,
@@ -126,8 +84,7 @@ Orientation checkOrientation(const vec2& A, const vec2& B, const vec2& C)
 }
 
 
-
-void triangle(const vec4 clip_verts[3], IShader& shader, TGAImage& image, std::vector<double>& zbuffer, std::vector<double>& MSAA_zbuffer, std::vector<TGAColor >& fram_buf_ssaa, std::vector<double>& depth_buf_ssaa, int face_index)
+void triangle(const vec4 clip_verts[3], IShader& shader, TGAImage& image, std::vector<double>& zbuffer, std::vector<double>& MSAA_zbuffer, std::vector<TGAColor >& SSAA_framebuffer, std::vector<double>& SSAA_zbuffer, int face_index)
 {
     //clip_verts是NDC空间的三角形顶点坐标,还没有做透视除法
     
@@ -151,9 +108,6 @@ void triangle(const vec4 clip_verts[3], IShader& shader, TGAImage& image, std::v
 #pragma omp parallel for
     if (g_ssaaEnabled)
     {
-        /*depth_buf_ssaa.resize(image.width() * image.height() * 4, std::numeric_limits<double>::max());
-        fram_buf_ssaa.resize(image.width() * image.height() * 4, TGAColor{ 0, 0, 0, 0, 4 });*/
-
         int ssaa_sample = 3;
         float sampling_period = 1.0f / ssaa_sample;
         //实现ssaa
@@ -161,7 +115,6 @@ void triangle(const vec4 clip_verts[3], IShader& shader, TGAImage& image, std::v
         {
             for (int y = std::max(bboxmin[1], 0); y <= std::min(bboxmax[1], image.height() - 1); y++)
             {
-                //先启动一下4倍SSAA玩一下
 				//std::cout << x <<" "<< y << std::endl; x和y都是整数
 				double rgb[3] = { 0.0, 0.0, 0.0 };
                 for (int i = 0; i < ssaa_sample; i++)
@@ -179,35 +132,20 @@ void triangle(const vec4 clip_verts[3], IShader& shader, TGAImage& image, std::v
                         //std::cout<< bc_clip.x << " " << bc_clip.y << " " << bc_clip.z << " "<< (bc_clip.x + bc_clip.y + bc_clip.z) << std::endl;
                         double frag_depth = vec3{ clip_verts[0][2], clip_verts[1][2], clip_verts[2][2] } *bc_clip;
                         bool shouldClipInFragment = false;
-                        //        for (int i = 0; i < 3; i++)  //trick:片元着色器暴力裁剪
-                        //        {
-                        //            //如果不在NDC空间范围内，就不渲染了
-                        //            if (!(pts[i][0] >= -1 && pts[i][0] <= 1) || !(pts[i][1] >= -1 && pts[i][1] <= 1) || !(pts[i][2] >= -1 && pts[i][2] <= 1))
-                        //            {
-                        //                shouldClipInFragment = true;
-                        //                break;
-                                    //}
-                        //        }
-                                //shouldClipInFragment = false;
-                        
-
-
                         // 左下角的点
                         int depth_buf_x, depth_buf_y;
                         depth_buf_x = x * ssaa_sample + i;
                         depth_buf_y = y * ssaa_sample + j;
-                        if (shouldClipInFragment || frag_depth > depth_buf_ssaa[depth_buf_x + depth_buf_y * image.width()* ssaa_sample]) continue;
+                        if (shouldClipInFragment || frag_depth > SSAA_zbuffer[depth_buf_x + depth_buf_y * image.width()* ssaa_sample]) continue;
 
                         TGAColor color;
                         if (shader.fragment(bc_clip, color, face_index)) continue; // fragment shader can discard current fragment 如果返回true，就不渲染这个像素
-                        depth_buf_ssaa[depth_buf_x + depth_buf_y * image.width()* ssaa_sample] = frag_depth;
+                        SSAA_zbuffer[depth_buf_x + depth_buf_y * image.width()* ssaa_sample] = frag_depth;
                         //image.set(x, y, color);
                         //新建一个颜色数组，用来存储颜色值
-
-                        fram_buf_ssaa[depth_buf_x + depth_buf_y * image.width() * ssaa_sample] = color;
+                        SSAA_framebuffer[depth_buf_x + depth_buf_y * image.width() * ssaa_sample] = color;
                     }
                 }
-
                 
             }
 
@@ -225,9 +163,9 @@ void triangle(const vec4 clip_verts[3], IShader& shader, TGAImage& image, std::v
 						int depth_buf_x, depth_buf_y;
 						depth_buf_x = x * ssaa_sample + i;
 						depth_buf_y = y * ssaa_sample + j;
-						rgb[0] += fram_buf_ssaa[depth_buf_x + depth_buf_y * image.width() * ssaa_sample].bgra[0];
-						rgb[1] += fram_buf_ssaa[depth_buf_x + depth_buf_y * image.width() * ssaa_sample].bgra[1];
-						rgb[2] += fram_buf_ssaa[depth_buf_x + depth_buf_y * image.width() * ssaa_sample].bgra[2];
+						rgb[0] += SSAA_framebuffer[depth_buf_x + depth_buf_y * image.width() * ssaa_sample].bgra[0];
+						rgb[1] += SSAA_framebuffer[depth_buf_x + depth_buf_y * image.width() * ssaa_sample].bgra[1];
+						rgb[2] += SSAA_framebuffer[depth_buf_x + depth_buf_y * image.width() * ssaa_sample].bgra[2];
 					}
 				}
 				rgb[0] /= ssaa_sample * ssaa_sample;
@@ -240,7 +178,6 @@ void triangle(const vec4 clip_verts[3], IShader& shader, TGAImage& image, std::v
 				image.set(x, y, finalColor);
             }
         }
-    
     }
     
     else
