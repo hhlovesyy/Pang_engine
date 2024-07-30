@@ -5,6 +5,11 @@
 #include "stb_image.h"
 #include <glm/glm.hpp>
 
+#include "imgui.h"
+#include "imgui_impl_opengl3.h"
+#include "imgui_impl_glfw.h"
+
+
 #include <iostream>
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow* window);
@@ -45,6 +50,16 @@ int main()
         std::cout << "Failed to initialize GLAD" << std::endl;
         return -1;
     }
+
+    // imgui窗口设置
+    IMGUI_CHECKVERSION();
+    ImGui::CreateContext();
+    ImGuiIO& io = ImGui::GetIO(); (void)io;
+    // 设置颜色主题
+    ImGui::StyleColorsLight();
+    // Setup Platform/Renderer bindings
+    ImGui_ImplGlfw_InitForOpenGL(window, true);
+    ImGui_ImplOpenGL3_Init("#version 330");
 
     // build and compile our shader zprogram
     // ------------------------------------
@@ -107,7 +122,7 @@ int main()
     unsigned char* data = stbi_load("obj/textures/wall.jpg", &width, &height, &nrChannels, 0);
     if (data)
     {
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
         glGenerateMipmap(GL_TEXTURE_2D);
     }
     else
@@ -147,7 +162,8 @@ int main()
     // or set it via the texture class
     ourShader.setInt("texture2", 1); //这是另一种设置纹理参数的方式
 
-
+    ImVec4 color = ImVec4(1.0f, 1.0f, 1.0f, 1.0f);
+    bool default_color = true;
 
     // render loop
     // -----------
@@ -156,11 +172,45 @@ int main()
         // input
         // -----
         processInput(window);
+        // 启动ImGui框架
+        ImGui_ImplOpenGL3_NewFrame();
+        ImGui_ImplGlfw_NewFrame();
+        ImGui::NewFrame();
+        {
+            //static float f = 0.0f;
+            ImGui::Begin("MyTest");
+            ImGui::SetWindowSize(ImVec2(500, 100));
+            ImGui::Text("change color");
+            ImGui::ColorEdit3("choose one color", (float*)&color, 1);
+            // 勾选框，选中则使三角形保持三色渐变色，取消勾选则课进行全局颜色设置
+            ImGui::Checkbox("default color", &default_color);
+            
+            if (default_color)
+            {
+                vertices[3] = 1.0f; vertices[4] = 1.0f; vertices[5] = 1.0f;
+                vertices[11] = 1.0f; vertices[12] = 1.0f; vertices[13] = 1.0f;
+                vertices[19] = 1.0f; vertices[20] = 1.0f; vertices[21] = 1.0f;
+                vertices[27] = 1.0f; vertices[28] = 1.0f; vertices[29] = 1.0f;
+            }
+            else
+            {
+                for (int i = 1; i <= 4; i++) {
+                    vertices[i * 8 - 5] = color.x;
+                    vertices[i * 8 - 4] = color.y;
+                    vertices[i * 8 - 3] = color.z;
+                }
+            }
+
+            ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+            ImGui::End();
+        }
 
         // render
         // ------
-        glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+        glClearColor(0,0,0, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
+
+
 
         // bind textures on corresponding texture units
         glActiveTexture(GL_TEXTURE0);
@@ -170,8 +220,24 @@ int main()
 
         // render container
         ourShader.use();
+
+        // color attribute,因为颜色要得到更新，所以要重新绑定数据
+        // 绑定顶点缓冲对象
+        glBindBuffer(GL_ARRAY_BUFFER, VBO);
+        // 将顶点数据复制到当前绑定的缓冲中
+        glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+        // EBO
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
+        glEnableVertexAttribArray(1);
+
         glBindVertexArray(VAO);
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+
+        // 渲染
+        ImGui::Render();
+        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
         // -------------------------------------------------------------------------------
@@ -185,6 +251,10 @@ int main()
     glDeleteBuffers(1, &VBO);
     glDeleteBuffers(1, &EBO);
 
+    // 清除GUI资源
+    ImGui_ImplOpenGL3_Shutdown();
+    ImGui_ImplGlfw_Shutdown();
+    ImGui::DestroyContext();
     // glfw: terminate, clearing all previously allocated GLFW resources.
     // ------------------------------------------------------------------
     glfwTerminate();
