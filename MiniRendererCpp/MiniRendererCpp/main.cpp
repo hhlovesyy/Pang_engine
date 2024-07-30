@@ -9,6 +9,7 @@
 #include <windows.h>
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
+#include "rendererGL.h"
 
 constexpr int width = 2048; // output image size
 constexpr int height = 2048;
@@ -130,9 +131,9 @@ int ssaa_2 = ssaa_sample * ssaa_sample;
 void RenderModel()
 {
     //Model model("obj/african_head.obj", "african_head"); // load an object
-    //Model model("obj/RobinFix.obj", "Robin");
+    Model model("obj/RobinFix.obj", "Robin");
     //Model model("obj/Pamu.obj", "Pamu");
-    Model model("obj/LaiKaEn.obj", "LaiKaEn");
+    //Model model("obj/LaiKaEn.obj", "LaiKaEn");
     Shader shader(model);
 
     for (int index = 0; index < 10; index++)  //不同角度渲染10张图，看看效果
@@ -195,6 +196,12 @@ void main_renderer()
     std::vector<double> depth_buf_ssaa(width * height * ssaa_2, std::numeric_limits<double>::max());
     //RenderJustTriangle(framebuffer, zbuffer);
     RenderModel();
+}
+#include <GL/GL.h>
+#include <glfw3.h>
+void main_renderer_openGL()
+{
+    rendererGLInit();
 }
 
 #include "imgui.h"
@@ -312,7 +319,7 @@ int main(int, char**)
             static float f = 0.0f;
             static int counter = 0;
 
-            ImGui::Begin("Hello, world!");                          // Create a window called "Hello, world!" and append into it.
+            ImGui::Begin("This is our renderer, which has features with openGL");                          // Create a window called "Hello, world!" and append into it.
 
             ImGui::Text("This is some useful text.");               // Display some text (you can use a format strings too)
             ImGui::Checkbox("Demo Window", &show_demo_window);      // Edit bools storing our window open/close state
@@ -324,7 +331,7 @@ int main(int, char**)
             if (ImGui::Button("Button to render"))                            // Buttons return true when clicked (most widgets return true when edited/activated)
             {
                 counter++;
-                main_renderer();
+                main_renderer_openGL();
             }
             ImGui::SameLine();
             ImGui::Text("counter = %d", counter);
