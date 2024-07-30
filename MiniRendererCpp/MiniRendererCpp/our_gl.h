@@ -1,8 +1,16 @@
 #include "tgaimage.h"
 #include "geometry.h"
+#include "msaa_data.h"
 
-// 全局变量声明 是否启用MSAA
+// 全局变量声明 是否启用SSAA
 extern bool g_ssaaEnabled;
+// 全局变量声明 是否启用MSAA
+extern bool g_msaaEnabled;
+
+extern int ssaa_sample;
+extern int ssaa_2;
+extern int msaa_sample;//2*2
+extern int msaa_sample_2;//2*2
 
 void viewport(const int x, const int y, const int w, const int h);
 void projection(double left, double right, double bottom, double up, double near, double far); 
@@ -20,4 +28,4 @@ struct IShader
     virtual bool fragment(const vec3 bar, TGAColor& color, int faceIndex) = 0;
 };
 
-void triangle(const vec4 clip_verts[3], IShader& shader, TGAImage& image, std::vector<double>& zbuffer, std::vector<double>& MSAA_zbuffer, std::vector<TGAColor >& SSAA_framebuffer, std::vector<double>& SSAA_zbuffer, int face_index);
+void triangle(const vec4 clip_verts[3], IShader& shader, TGAImage& image, std::vector<double>& zbuffer, std::vector<double>& MSAA_zbuffer, std::vector<TGAColor >& SSAA_framebuffer, std::vector<double>& SSAA_zbuffer, std::vector< msaaData >& MsaaData, int face_index);

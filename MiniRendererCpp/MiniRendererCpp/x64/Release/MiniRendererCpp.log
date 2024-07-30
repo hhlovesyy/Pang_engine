@@ -1,15 +1,17 @@
-﻿  main.cpp
-D:\MRenderer\PangEngine\MiniRendererCpp\MiniRendererCpp\our_gl.h(18,53): warning C4244: “参数”: 从“double”转换到“const int”，可能丢失数据
-D:\MRenderer\PangEngine\MiniRendererCpp\MiniRendererCpp\our_gl.h(18,31): warning C4244: “参数”: 从“double”转换到“const int”，可能丢失数据
-D:\MRenderer\PangEngine\MiniRendererCpp\MiniRendererCpp\main.cpp(84,48): warning C4244: “参数”: 从“double”转换到“const _Ty”，可能丢失数据
-D:\MRenderer\PangEngine\MiniRendererCpp\MiniRendererCpp\main.cpp(84,48): warning C4244:         with
-D:\MRenderer\PangEngine\MiniRendererCpp\MiniRendererCpp\main.cpp(84,48): warning C4244:         [
-D:\MRenderer\PangEngine\MiniRendererCpp\MiniRendererCpp\main.cpp(84,48): warning C4244:             _Ty=int
-D:\MRenderer\PangEngine\MiniRendererCpp\MiniRendererCpp\main.cpp(84,48): warning C4244:         ]
-D:\MRenderer\PangEngine\MiniRendererCpp\MiniRendererCpp\main.cpp(96,53): warning C4244: “参数”: 从“double”转换到“const int”，可能丢失数据
-D:\MRenderer\PangEngine\MiniRendererCpp\MiniRendererCpp\main.cpp(96,29): warning C4244: “参数”: 从“double”转换到“const int”，可能丢失数据
+﻿  our_gl.cpp
+D:\MRenderer\PangEngine\MiniRendererCpp\MiniRendererCpp\our_gl.h(26,53): warning C4244: “参数”: 从“double”转换到“const int”，可能丢失数据
+D:\MRenderer\PangEngine\MiniRendererCpp\MiniRendererCpp\our_gl.h(26,31): warning C4244: “参数”: 从“double”转换到“const int”，可能丢失数据
+D:\MRenderer\PangEngine\MiniRendererCpp\MiniRendererCpp\our_gl.cpp(75,16): warning C4244: “初始化”: 从“double”转换到“float”，可能丢失数据
+D:\MRenderer\PangEngine\MiniRendererCpp\MiniRendererCpp\our_gl.cpp(130,37): warning C4244: “初始化”: 从“double”转换到“float”，可能丢失数据
+D:\MRenderer\PangEngine\MiniRendererCpp\MiniRendererCpp\our_gl.cpp(131,37): warning C4244: “初始化”: 从“double”转换到“float”，可能丢失数据
+D:\MRenderer\PangEngine\MiniRendererCpp\MiniRendererCpp\our_gl.cpp(134,44): warning C4244: “初始化”: 从“double”转换到“float”，可能丢失数据
+D:\MRenderer\PangEngine\MiniRendererCpp\MiniRendererCpp\our_gl.cpp(210,37): warning C4244: “初始化”: 从“double”转换到“float”，可能丢失数据
+D:\MRenderer\PangEngine\MiniRendererCpp\MiniRendererCpp\our_gl.cpp(211,37): warning C4244: “初始化”: 从“double”转换到“float”，可能丢失数据
+D:\MRenderer\PangEngine\MiniRendererCpp\MiniRendererCpp\our_gl.cpp(214,44): warning C4244: “初始化”: 从“double”转换到“float”，可能丢失数据
+D:\MRenderer\PangEngine\MiniRendererCpp\MiniRendererCpp\our_gl.cpp(248,36): warning C4244: “初始化”: 从“double”转换到“float”，可能丢失数据
+D:\MRenderer\PangEngine\MiniRendererCpp\MiniRendererCpp\our_gl.cpp(290,36): warning C4244: “初始化”: 从“double”转换到“float”，可能丢失数据
   正在生成代码
-  1 of 3224 functions (<0.1%) were compiled, the rest were copied from previous compilation.
+  1 of 3281 functions (<0.1%) were compiled, the rest were copied from previous compilation.
     0 functions were new in current compilation
     100 functions had inline decision re-evaluated but remain unchanged
   已完成代码的生成

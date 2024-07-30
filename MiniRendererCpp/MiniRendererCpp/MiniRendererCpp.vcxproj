@@ -141,6 +141,7 @@
   <ItemGroup>
     <ClInclude Include="geometry.h" />
     <ClInclude Include="model.h" />
+    <ClInclude Include="msaa_data.h" />
     <ClInclude Include="our_gl.h" />
     <ClInclude Include="stb_image.h" />
     <ClInclude Include="tgaimage.h" />

@@ -9,6 +9,7 @@
 #include <windows.h>
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
+#include "msaa_data.h"
 
 constexpr int width = 800; // output image size
 constexpr int height = 800;
@@ -115,6 +116,24 @@ void WriteZBufferToFile(std::vector<double>& zbuffer, std::string& filename)
     zbuffer_image.write_tga_file(filename);
 }
 
+void WriteMoreBufferToFile(std::vector<double>& buffer, std::string& filename,int multi)
+{
+    TGAImage zbuffer_image(width* multi, height* multi, TGAImage::RGBA);
+    for (int i = 0; i < width* multi; i++)
+    {
+        for (int j = 0; j < height* multi; j++)
+        {
+            double z_value = buffer[i + j * width* multi];
+            //-1~1 =>0~1
+            z_value = (z_value + 1) / 2;
+            /*if(z_value < 100)
+                std::cout << z_value << std::endl;*/
+            TGAColor color = TGAColor{ static_cast<std::uint8_t>(z_value * 255), static_cast<std::uint8_t>(z_value * 255), static_cast<std::uint8_t>(z_value * 255), 255, 32 };
+            zbuffer_image.set(i, j, color);
+        }
+    }
+    zbuffer_image.write_tga_file(filename);
+}
 vec3 calculate_around_eyepos(int index)
 {
     //以eye{ 0,0,0.8 }为第一个，围绕中心center{ 0,1.5,0 }旋转，半径为1.5，高度为0.8，输入index，输出eye的位置，一共20个
@@ -125,8 +144,11 @@ vec3 calculate_around_eyepos(int index)
     return vec3{ x,y,z };
 
 }
-int ssaa_sample = 3;
-int ssaa_2 = ssaa_sample * ssaa_sample;
+//int ssaa_sample = 3;
+//int ssaa_2 = ssaa_sample * ssaa_sample;
+//int msaa_sample_2 = 4;//2*2
+
+
 void RenderModel()
 {
     //Model model("obj/african_head.obj", "african_head"); // load an object
@@ -135,14 +157,17 @@ void RenderModel()
     Model model("obj/LaiKaEn.obj", "LaiKaEn");
     Shader shader(model);
 
-    for (int index = 0; index < 10; index++)  //不同角度渲染10张图，看看效果
+    for (int index = 0; index < 2; index++)  //不同角度渲染10张图，看看效果
     {
         TGAImage framebuffer(width, height, TGAImage::RGB); // the output image
         std::vector<double> zbuffer(width * height, std::numeric_limits<double>::max());
         //MSAA_zbuffer
-        std::vector<double> MSAA_zbuffer(width * height * ssaa_2, std::numeric_limits<double>::max());
+        std::vector<double> MSAA_zbuffer(width * height * msaa_sample_2, std::numeric_limits<double>::max());
         std::vector<TGAColor > SSAA_framebuffer(width * height * ssaa_2, TGAColor{ 0,0,0,0 });
         std::vector<double> SSAA_zbuffer(width * height * ssaa_2, std::numeric_limits<double>::max());
+        //std::vector< std::vector<bool> > pixelMask;
+        
+        std::vector<msaaData> MsaaData(width * height);
 
         lookat(calculate_around_eyepos(index), center, up); //计算model-view矩阵
         //viewport(width / 8, height / 8, width * 3 / 4, height * 3 / 4); // build the Viewport matrix
@@ -163,13 +188,61 @@ void RenderModel()
                 shader.vertex(i, j, clip_vert[j], discard, index); // call the vertex shader for each triangle vertex
             }
             if (discard) continue;
-            triangle(clip_vert, shader, framebuffer, zbuffer,MSAA_zbuffer, SSAA_framebuffer,SSAA_zbuffer,i); // the core rasterizer
+            triangle(clip_vert, shader, framebuffer, zbuffer,MSAA_zbuffer, SSAA_framebuffer,SSAA_zbuffer, MsaaData,i); // the core rasterizer
         }
+        
+        if (g_ssaaEnabled==false&&g_msaaEnabled == true)
+        {
+            //执行image.set(x, y, color);的操作
+            //从 MsaaData中取值，然后写入image.set(x, y, color)
+            for (int x = 0; x < width; x++)
+			{
+				for (int y = 0; y < height; y++)
+				{
+                    //int MsaaNum=0;
+					TGAColor color = TGAColor{ 0,0,0,0 };
+					int index = x + y * width;
+                    double bgr[3] = { 0.0, 0.0, 0.0 };
+					for (int k = 0; k < msaa_sample_2; k++)
+					{
+						if (MsaaData[index].mask[k] == true)
+						{
+                            for (int i = 0; i < 3; i++)
+							{
+                                bgr[i] = bgr[i] + MsaaData[index].color[k][i];
+							}
+							//MsaaNum++;
+						}
+					}
+                    TGAColor finalColor;
+                    for (int i = 0; i < 3; i++)
+					{
+                        color.bgra[i] = static_cast<std::uint8_t>(bgr[i]*1.0f / msaa_sample_2);					
+                    }
+                    //finalColor.bgra[0] = static_cast<std::uint8_t>(bgr[0]);
+                    //finalColor.bgra[1] = static_cast<std::uint8_t>(bgr[1]);
+                    //finalColor.bgra[2] = static_cast<std::uint8_t>(bgr[2]);
+                    framebuffer.set(x, y, color);
+				}
+			}
+        }
+        
         std::string name = std::to_string(index) + "RobinResFinal.tga";
         std::string zbuffer_name = std::to_string(index) + "RobinZBuffer.tga";
         framebuffer.write_tga_file(name);
         WriteZBufferToFile(zbuffer, zbuffer_name);
+        if (g_ssaaEnabled == false && g_msaaEnabled == true)
+		{
+            std::string MSAA_zbuffer_name = std::to_string(index) + "_MSAAZBuffer.tga";
+            WriteMoreBufferToFile(MSAA_zbuffer, MSAA_zbuffer_name, msaa_sample);
+		}
+        if (g_ssaaEnabled == true )
+        {
+            std::string SSAA_zbuffer_name = std::to_string(index) + "_SSAAZBuffer.tga";
+            WriteMoreBufferToFile(SSAA_zbuffer, SSAA_zbuffer_name, ssaa_sample);
+        }
 
+        
     }
     std::cout << "finish rendering!" << std::endl;
 }
@@ -188,9 +261,7 @@ void main_renderer()
     TGAImage framebuffer(width, height, TGAImage::RGB); // the output image
     std::vector<double> zbuffer(width * height, std::numeric_limits<double>::max());
     //MSAA_zbuffer
-    int ssaa_sample = 3;
-    int ssaa_2 = ssaa_sample * ssaa_sample;
-    std::vector<double> MSAA_zbuffer(width * height* ssaa_2, std::numeric_limits<double>::max());
+    std::vector<double> MSAA_zbuffer(width * height* msaa_sample_2, std::numeric_limits<double>::max());
     std::vector<TGAColor > SSAA_framebuffer(width * height * ssaa_2, TGAColor{ 0,0,0,0 });
     std::vector<double> SSAA_zbuffer(width * height * ssaa_2, std::numeric_limits<double>::max());
     //RenderJustTriangle(framebuffer, zbuffer);

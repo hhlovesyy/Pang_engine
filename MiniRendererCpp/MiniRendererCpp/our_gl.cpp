@@ -1,6 +1,7 @@
 #include "our_gl.h"
-
-bool g_ssaaEnabled = true;
+#include "msaa_data.h"
+bool g_ssaaEnabled = false;
+bool g_msaaEnabled = true;//如果都是true，优先启用SSAA
 
 mat<4, 4> ModelView;
 mat<4, 4> Viewport;
@@ -50,6 +51,7 @@ vec3 barycentric(vec2* pts, vec2 P)  // pts[3] and P are in screen coordinates
 }
 
 #include <random>
+#include <bitset>
 
 // 均匀采样函数，返回一个介于0和1之间的随机数
 double uniformSample()
@@ -82,9 +84,13 @@ Orientation checkOrientation(const vec2& A, const vec2& B, const vec2& C)
         return COLLINEAR; // 共线
     }
 }
-
-
-void triangle(const vec4 clip_verts[3], IShader& shader, TGAImage& image, std::vector<double>& zbuffer, std::vector<double>& MSAA_zbuffer, std::vector<TGAColor >& SSAA_framebuffer, std::vector<double>& SSAA_zbuffer, int face_index)
+//
+int ssaa_sample = 3;
+int ssaa_2 = ssaa_sample * ssaa_sample;
+int msaa_sample = 2;//2*2
+int msaa_sample_2 = 4;//2*2
+//记得传引用
+void triangle(const vec4 clip_verts[3], IShader& shader, TGAImage& image, std::vector<double>& zbuffer, std::vector<double>& MSAA_zbuffer, std::vector<TGAColor >& SSAA_framebuffer, std::vector<double>& SSAA_zbuffer, std::vector< msaaData >& MsaaData , int face_index)
 {
     //clip_verts是NDC空间的三角形顶点坐标,还没有做透视除法
     
@@ -108,7 +114,7 @@ void triangle(const vec4 clip_verts[3], IShader& shader, TGAImage& image, std::v
 #pragma omp parallel for
     if (g_ssaaEnabled)
     {
-        int ssaa_sample = 3;
+        //int ssaa_sample = 3;
         float sampling_period = 1.0f / ssaa_sample;
         //实现ssaa
         for (int x = std::max(bboxmin[0], 0); x <= std::min(bboxmax[0], image.width() - 1); x++)
@@ -132,7 +138,7 @@ void triangle(const vec4 clip_verts[3], IShader& shader, TGAImage& image, std::v
                         //std::cout<< bc_clip.x << " " << bc_clip.y << " " << bc_clip.z << " "<< (bc_clip.x + bc_clip.y + bc_clip.z) << std::endl;
                         double frag_depth = vec3{ clip_verts[0][2], clip_verts[1][2], clip_verts[2][2] } *bc_clip;
                         bool shouldClipInFragment = false;
-                        // 左下角的点
+                        // 左下角的点 可以看作为了取整数
                         int depth_buf_x, depth_buf_y;
                         depth_buf_x = x * ssaa_sample + i;
                         depth_buf_y = y * ssaa_sample + j;
@@ -179,7 +185,94 @@ void triangle(const vec4 clip_verts[3], IShader& shader, TGAImage& image, std::v
             }
         }
     }
-    
+    else if (g_msaaEnabled)
+    {
+        float dx[4] = { 0.25, 0.25, 0.75, 0.75 };
+        float dy[4] = { 0.25, 0.75, 0.25, 0.75 };
+        //int ssaa_sample = 3;
+        float sampling_period = 1.0f / msaa_sample;
+        //实现ssaa
+        for (int x = std::max(bboxmin[0], 0); x <= std::min(bboxmax[0], image.width() - 1); x++)
+        {
+            for (int y = std::max(bboxmin[1], 0); y <= std::min(bboxmax[1], image.height() - 1); y++)
+            {
+                int msaa = 0;//记录有几个次像素点被覆盖，如果是0，就不渲染这个像素
+                //存一个是0-3哪几位有值，用二进制存储
+                int msaa_bit = 0;
+                int k0 = 0;
+                int index = x + y * image.width();
+                
+                for (int i = 0; i < msaa_sample; i++)
+                {
+                    for (int j = 0; j < msaa_sample; j++)
+                    {
+                        k0++;
+                        // 中心点
+                        float new_x = x + (i + 0.5) * sampling_period;
+                        float new_y = y + (j + 0.5) * sampling_period;
+                        vec3 bc_screen = barycentric(pts2, { new_x, new_y });
+                        if (bc_screen.x < 0 || bc_screen.y < 0 || bc_screen.z < 0) continue;
+                        float w_reciprocal = 1.0 / (bc_screen.x / clip_verts[0][3] + bc_screen.y / clip_verts[1][3] + bc_screen.z / clip_verts[2][3]);
+                        // 但是这里又用了任意属性插值公式， 并且IA取的v[0].z()
+                        vec3  bc_clip = w_reciprocal * vec3(bc_screen.x / clip_verts[0][3], bc_screen.y / clip_verts[1][3], bc_screen.z / clip_verts[2][3]);
+                        //std::cout<< bc_clip.x << " " << bc_clip.y << " " << bc_clip.z << " "<< (bc_clip.x + bc_clip.y + bc_clip.z) << std::endl;
+                        double frag_depth = vec3{ clip_verts[0][2], clip_verts[1][2], clip_verts[2][2] } *bc_clip;
+                        bool shouldClipInFragment = false;
+                        // 左下角的点 可以看作为了取整数
+                        int depth_buf_x, depth_buf_y;
+                        depth_buf_x = x * msaa_sample + i;
+                        depth_buf_y = y * msaa_sample + j;
+                        if (shouldClipInFragment || frag_depth > MSAA_zbuffer[depth_buf_x + depth_buf_y * image.width() * msaa_sample]) continue;
+
+                        MSAA_zbuffer[depth_buf_x + depth_buf_y * image.width() * msaa_sample] = frag_depth;
+                        
+                        int k = k0 - 1;
+                        //将之前的msaa显示出来 
+                        /*std::string msaa_str1 = std::bitset<4>(msaa_bit).to_string();
+                        std::cout << "  msaa_bit" << msaa_str1 << std::endl;*/
+
+                        //存一个是0-3哪几位有值，用二进制存储
+                        msaa_bit |= 1 << k;//|=意思是或等于，也就是说，如果k=2， msaa_bit= 0001 | 100 = 101
+
+                        //将msaa显示出来 比如显示出1001
+                        /*std::string msaa_str = std::bitset<4>(msaa_bit).to_string();
+                        std::cout << "k" << k << "  msaa_bit" << msaa_str << std::endl;    */             
+                        
+                        msaa++;
+                        MsaaData[index].mask[k] = true;
+                        //k++;                       
+                    }
+                }
+                
+                if (msaa == 0) continue;//记录有几个次像素点被覆盖，如果是0，就不渲染这个像素
+                vec3 bc_screen = barycentric(pts2, { static_cast<double>(x), static_cast<double>(y) });
+                float w_reciprocal = 1.0 / (bc_screen.x / clip_verts[0][3] + bc_screen.y / clip_verts[1][3] + bc_screen.z / clip_verts[2][3]);
+                // 但是这里又用了任意属性插值公式， 并且IA取的v[0].z()
+                vec3  bc_clip = w_reciprocal * vec3(bc_screen.x / clip_verts[0][3], bc_screen.y / clip_verts[1][3], bc_screen.z / clip_verts[2][3]);
+                //std::cout<< bc_clip.x << " " << bc_clip.y << " " << bc_clip.z << " "<< (bc_clip.x + bc_clip.y + bc_clip.z) << std::endl;
+
+                TGAColor color;
+                if (shader.fragment(bc_clip, color, face_index)) continue; // fragment shader can discard current fragment 如果返回true，就不渲染这个像素
+
+                //double rgb[3] = { 0.0, 0.0, 0.0 };
+                //rgb[0] *= (msaa / 4.f);
+                //rgb[1] *= (msaa / 4.f);
+                //rgb[2] *= (msaa / 4.f);
+
+                //根据msaa_bit来给颜色赋值：
+                for (int k = 0; k < 4; k++)
+                {
+                    if (msaa_bit & (1 << k)) //意思是如果第k位是1 <<符号的意思是说，1向左移动k位，也就是说第k位是1，举个例子，如果k=2，那么1 << 2 = 100，也就是4
+                    {
+                        MsaaData[x + y * image.width()].color[k] = color;
+                    }
+                }
+            }
+
+        }
+        
+
+    }
     else
     {
         for (int x = std::max(bboxmin[0], 0); x <= std::min(bboxmax[0], image.width() - 1); x++)
