@@ -10,6 +10,7 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 #include "msaa_data.h"
+#include "rendererGL.h"
 
 constexpr int width = 800; // output image size
 constexpr int height = 800;
@@ -267,6 +268,12 @@ void main_renderer()
     //RenderJustTriangle(framebuffer, zbuffer);
     RenderModel();
 }
+#include <GL/GL.h>
+#include <glfw3.h>
+void main_renderer_openGL()
+{
+    rendererGLInit();
+}
 
 #include "imgui.h"
 #include "imgui_impl_opengl3.h"
@@ -383,7 +390,7 @@ int main(int, char**)
             static float f = 0.0f;
             static int counter = 0;
 
-            ImGui::Begin("Hello, world!");                          // Create a window called "Hello, world!" and append into it.
+            ImGui::Begin("This is our renderer, which has features with openGL");                          // Create a window called "Hello, world!" and append into it.
 
             ImGui::Text("This is some useful text.");               // Display some text (you can use a format strings too)
             ImGui::Checkbox("Demo Window", &show_demo_window);      // Edit bools storing our window open/close state

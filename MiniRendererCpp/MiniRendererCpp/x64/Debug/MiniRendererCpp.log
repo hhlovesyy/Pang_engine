@@ -1,13 +1,11 @@
-﻿  our_gl.cpp
+﻿  main.cpp
 D:\MRenderer\PangEngine\MiniRendererCpp\MiniRendererCpp\our_gl.h(26,53): warning C4244: “参数”: 从“double”转换到“const int”，可能丢失数据
 D:\MRenderer\PangEngine\MiniRendererCpp\MiniRendererCpp\our_gl.h(26,31): warning C4244: “参数”: 从“double”转换到“const int”，可能丢失数据
-D:\MRenderer\PangEngine\MiniRendererCpp\MiniRendererCpp\our_gl.cpp(75,16): warning C4244: “初始化”: 从“double”转换到“float”，可能丢失数据
-D:\MRenderer\PangEngine\MiniRendererCpp\MiniRendererCpp\our_gl.cpp(131,37): warning C4244: “初始化”: 从“double”转换到“float”，可能丢失数据
-D:\MRenderer\PangEngine\MiniRendererCpp\MiniRendererCpp\our_gl.cpp(132,37): warning C4244: “初始化”: 从“double”转换到“float”，可能丢失数据
-D:\MRenderer\PangEngine\MiniRendererCpp\MiniRendererCpp\our_gl.cpp(135,44): warning C4244: “初始化”: 从“double”转换到“float”，可能丢失数据
-D:\MRenderer\PangEngine\MiniRendererCpp\MiniRendererCpp\our_gl.cpp(211,37): warning C4244: “初始化”: 从“double”转换到“float”，可能丢失数据
-D:\MRenderer\PangEngine\MiniRendererCpp\MiniRendererCpp\our_gl.cpp(212,37): warning C4244: “初始化”: 从“double”转换到“float”，可能丢失数据
-D:\MRenderer\PangEngine\MiniRendererCpp\MiniRendererCpp\our_gl.cpp(215,44): warning C4244: “初始化”: 从“double”转换到“float”，可能丢失数据
-D:\MRenderer\PangEngine\MiniRendererCpp\MiniRendererCpp\our_gl.cpp(249,36): warning C4244: “初始化”: 从“double”转换到“float”，可能丢失数据
-D:\MRenderer\PangEngine\MiniRendererCpp\MiniRendererCpp\our_gl.cpp(291,36): warning C4244: “初始化”: 从“double”转换到“float”，可能丢失数据
+D:\MRenderer\PangEngine\MiniRendererCpp\MiniRendererCpp\main.cpp(86,48): warning C4244: “参数”: 从“double”转换到“const _Ty”，可能丢失数据
+D:\MRenderer\PangEngine\MiniRendererCpp\MiniRendererCpp\main.cpp(86,48): warning C4244:         with
+D:\MRenderer\PangEngine\MiniRendererCpp\MiniRendererCpp\main.cpp(86,48): warning C4244:         [
+D:\MRenderer\PangEngine\MiniRendererCpp\MiniRendererCpp\main.cpp(86,48): warning C4244:             _Ty=int
+D:\MRenderer\PangEngine\MiniRendererCpp\MiniRendererCpp\main.cpp(86,48): warning C4244:         ]
+D:\MRenderer\PangEngine\MiniRendererCpp\MiniRendererCpp\main.cpp(98,53): warning C4244: “参数”: 从“double”转换到“const int”，可能丢失数据
+D:\MRenderer\PangEngine\MiniRendererCpp\MiniRendererCpp\main.cpp(98,29): warning C4244: “参数”: 从“double”转换到“const int”，可能丢失数据
   MiniRendererCpp.vcxproj -> D:\MRenderer\PangEngine\MiniRendererCpp\x64\Debug\MiniRendererCpp.exe

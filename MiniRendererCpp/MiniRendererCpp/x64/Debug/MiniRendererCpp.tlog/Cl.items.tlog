@@ -1,4 +1,5 @@
 D:\MRenderer\PangEngine\MiniRendererCpp\MiniRendererCpp\geometry.cpp;D:\MRenderer\PangEngine\MiniRendererCpp\MiniRendererCpp\x64\Debug\geometry.obj
+D:\MRenderer\PangEngine\MiniRendererCpp\MiniRendererCpp\glad.c;D:\MRenderer\PangEngine\MiniRendererCpp\MiniRendererCpp\x64\Debug\glad.obj
 D:\MRenderer\PangEngine\MiniRendererCpp\MiniRendererCpp\imgui\backends\imgui_impl_opengl3.cpp;D:\MRenderer\PangEngine\MiniRendererCpp\MiniRendererCpp\x64\Debug\imgui_impl_opengl3.obj
 D:\MRenderer\PangEngine\MiniRendererCpp\MiniRendererCpp\imgui\backends\imgui_impl_win32.cpp;D:\MRenderer\PangEngine\MiniRendererCpp\MiniRendererCpp\x64\Debug\imgui_impl_win32.obj
 D:\MRenderer\PangEngine\MiniRendererCpp\MiniRendererCpp\imgui\imgui.cpp;D:\MRenderer\PangEngine\MiniRendererCpp\MiniRendererCpp\x64\Debug\imgui.obj
@@ -10,4 +11,5 @@ D:\MRenderer\PangEngine\MiniRendererCpp\MiniRendererCpp\imgui\misc\cpp\imgui_std
 D:\MRenderer\PangEngine\MiniRendererCpp\MiniRendererCpp\main.cpp;D:\MRenderer\PangEngine\MiniRendererCpp\MiniRendererCpp\x64\Debug\main.obj
 D:\MRenderer\PangEngine\MiniRendererCpp\MiniRendererCpp\model.cpp;D:\MRenderer\PangEngine\MiniRendererCpp\MiniRendererCpp\x64\Debug\model.obj
 D:\MRenderer\PangEngine\MiniRendererCpp\MiniRendererCpp\our_gl.cpp;D:\MRenderer\PangEngine\MiniRendererCpp\MiniRendererCpp\x64\Debug\our_gl.obj
+D:\MRenderer\PangEngine\MiniRendererCpp\MiniRendererCpp\rendererGL.cpp;D:\MRenderer\PangEngine\MiniRendererCpp\MiniRendererCpp\x64\Debug\rendererGL.obj
 D:\MRenderer\PangEngine\MiniRendererCpp\MiniRendererCpp\tgaimage.cpp;D:\MRenderer\PangEngine\MiniRendererCpp\MiniRendererCpp\x64\Debug\tgaimage.obj
