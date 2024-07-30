@@ -71,12 +71,12 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(SolutionDir)\MiniRendererCpp\imgui;$(SolutionDir)\MiniRendererCpp\imgui\backends;$(SolutionDir)\MiniRendererCpp\GLFW\include</IncludePath>
-    <LibraryPath>$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);$(SolutionDir)\MiniRendererCpp\GLFW\libs</LibraryPath>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(SolutionDir)\MiniRendererCpp\imgui;$(SolutionDir)\MiniRendererCpp\imgui\backends;$(SolutionDir)\MiniRendererCpp\GLFW\include;$(SolutionDir)\MiniRendererCpp\imgui\backends;$(SolutionDir)\MiniRendererCpp\thirdparty\glm\glm-1.0.0\glm</IncludePath>
+    <LibraryPath>$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);$(SolutionDir)\MiniRendererCpp\GLFW\libs;$(SolutionDir)\MiniRendererCpp\thirdparty\glm\glm-1.0.0\glm</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(SolutionDir)\MiniRendererCpp\imgui;$(SolutionDir)\MiniRendererCpp\imgui\backends;$(SolutionDir)\MiniRendererCpp\GLFW\include</IncludePath>
-    <LibraryPath>$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);$(SolutionDir)\MiniRendererCpp\GLFW\libs</LibraryPath>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(SolutionDir)\MiniRendererCpp\imgui;$(SolutionDir)\MiniRendererCpp\imgui\backends;$(SolutionDir)\MiniRendererCpp\GLFW\include;$(SolutionDir)\MiniRendererCpp\imgui\backends;$(SolutionDir)\MiniRendererCpp\thirdparty\glm\glm-1.0.0\glm</IncludePath>
+    <LibraryPath>$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);$(SolutionDir)\MiniRendererCpp\GLFW\libs;$(SolutionDir)\MiniRendererCpp\thirdparty\glm\glm-1.0.0\glm</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -112,7 +112,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)\MiniRendererCpp\imgui;$(SolutionDir)\MiniRendererCpp\imgui\backends;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\MiniRendererCpp\imgui;$(SolutionDir)\MiniRendererCpp\imgui\backends;$(SolutionDir)\MiniRendererCpp\thirdparty\glm\glm-1.0.0\;</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -129,7 +129,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)\MiniRendererCpp\imgui;$(SolutionDir)\MiniRendererCpp\imgui\backends;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\MiniRendererCpp\imgui;$(SolutionDir)\MiniRendererCpp\imgui\backends;$(SolutionDir)\MiniRendererCpp\thirdparty\glm\glm-1.0.0\;</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
