@@ -147,6 +147,7 @@
     <ClInclude Include="model.h" />
     <ClInclude Include="our_gl.h" />
     <ClInclude Include="rendererGL.h" />
+    <ClInclude Include="shader.h" />
     <ClInclude Include="stb_image.h" />
     <ClInclude Include="tgaimage.h" />
   </ItemGroup>
