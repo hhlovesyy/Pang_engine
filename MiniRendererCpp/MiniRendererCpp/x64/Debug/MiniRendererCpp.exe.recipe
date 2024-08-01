@@ -2,7 +2,7 @@
 <Project>
   <ProjectOutputs>
     <ProjectOutput>
-      <FullPath>D:\mihoyo\LanguageLearning\cpp\MyLearnTinyRenderer0723\Pang_engine\MiniRendererCpp\x64\Debug\MiniRendererCpp.exe</FullPath>
+      <FullPath>D:\MRenderer\PangEngine\MiniRendererCpp\x64\Debug\MiniRendererCpp.exe</FullPath>
     </ProjectOutput>
   </ProjectOutputs>
   <ContentFiles />
