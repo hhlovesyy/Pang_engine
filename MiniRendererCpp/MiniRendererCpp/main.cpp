@@ -225,12 +225,11 @@ int main()
         transform = glm::rotate(transform, (float)glfwGetTime(), glm::vec3(0.0f, 0.0f, 1.0f));
 
         // get matrix's uniform location and set matrix
+        // render container
         ourShader.use();
         unsigned int transformLoc = glGetUniformLocation(ourShader.ID, "transform");
         glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(transform));
 
-        // render container
-        ourShader.use();
 
         // color attribute,因为颜色要得到更新，所以要重新绑定数据
         // 绑定顶点缓冲对象
