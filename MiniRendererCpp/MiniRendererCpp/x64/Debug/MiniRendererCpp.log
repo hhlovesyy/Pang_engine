@@ -1,4 +1,4 @@
 ﻿  main.cpp
-D:\MRenderer\PangEngine\MiniRendererCpp\MiniRendererCpp\main.cpp(320,25): warning C4244: “初始化”: 从“double”转换到“float”，可能丢失数据
-D:\MRenderer\PangEngine\MiniRendererCpp\MiniRendererCpp\main.cpp(144,28): warning C4101: “EBO”: 未引用的局部变量
+D:\MRenderer\PangEngine\MiniRendererCpp\MiniRendererCpp\main.cpp(325,25): warning C4244: “初始化”: 从“double”转换到“float”，可能丢失数据
+D:\MRenderer\PangEngine\MiniRendererCpp\MiniRendererCpp\main.cpp(149,28): warning C4101: “EBO”: 未引用的局部变量
   MiniRendererCpp.vcxproj -> D:\MRenderer\PangEngine\MiniRendererCpp\x64\Debug\MiniRendererCpp.exe
