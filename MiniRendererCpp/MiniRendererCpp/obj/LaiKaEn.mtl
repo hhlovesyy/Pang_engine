@@ -1,7 +1,7 @@
 # Blender MTL File: 'None'
 # Material Count: 6
 
-newmtl LaiKaEnKu
+newmtl LaiKaEnYi
 Ns 900.000000
 Ka 1.000000 1.000000 1.000000
 Kd 0.800000 0.800000 0.800000
@@ -10,9 +10,9 @@ Ke 0.000000 0.000000 0.000000
 Ni 0.000000
 d 1.000000
 illum 1
-map_Kd D:\\mihoyo\\Resource\\honkaiStarRailResource\\CharacterModels\\莱卡恩_by_绝区零_d04de74ed596cdb0dbe2da14acf392ea\\tex\\衣.tga
+map_Kd textures/LaiKaEn/LaiKaEnYi.tga
 
-newmtl LaiKaEnMain
+newmtl LaiKaEnFa
 Ns 900.000000
 Ka 1.000000 1.000000 1.000000
 Kd 0.800000 0.800000 0.800000
@@ -21,9 +21,9 @@ Ke 0.000000 0.000000 0.000000
 Ni 0.000000
 d 1.000000
 illum 1
-map_Kd D:\\mihoyo\\Resource\\honkaiStarRailResource\\CharacterModels\\莱卡恩_by_绝区零_d04de74ed596cdb0dbe2da14acf392ea\\tex\\毛发.tga
+map_Kd textures/LaiKaEn/LaiKaEnFa.tga
 
-newmtl LaiKaEnMeijie
+newmtl LaiKaEnYan
 Ns 900.000000
 Ka 1.000000 1.000000 1.000000
 Kd 0.800000 0.800000 0.800000
@@ -32,9 +32,9 @@ Ke 0.000000 0.000000 0.000000
 Ni 0.000000
 d 1.000000
 illum 1
-map_Kd D:\\mihoyo\\Resource\\honkaiStarRailResource\\CharacterModels\\莱卡恩_by_绝区零_d04de74ed596cdb0dbe2da14acf392ea\\tex\\颜.tga
+map_Kd textures/LaiKaEn/yan.tga
 
-newmtl LaiKaEnMuguang
+newmtl LaiKaEnYan
 Ns 900.000000
 Ka 1.000000 1.000000 1.000000
 Kd 0.800000 0.800000 0.800000
@@ -43,9 +43,9 @@ Ke 0.000000 0.000000 0.000000
 Ni 0.000000
 d 1.000000
 illum 1
-map_Kd D:\\mihoyo\\Resource\\honkaiStarRailResource\\CharacterModels\\莱卡恩_by_绝区零_d04de74ed596cdb0dbe2da14acf392ea\\tex\\颜.tga
+map_Kd textures/LaiKaEn/yan.tga
 
-newmtl LaiKaEnMuying
+newmtl black
 Ns 900.000000
 Ka 1.000000 1.000000 1.000000
 Kd 0.800000 0.800000 0.800000
@@ -54,9 +54,9 @@ Ke 0.000000 0.000000 0.000000
 Ni 0.000000
 d 1.000000
 illum 1
-map_Kd D:\\mihoyo\\Resource\\honkaiStarRailResource\\CharacterModels\\莱卡恩_by_绝区零_d04de74ed596cdb0dbe2da14acf392ea\\tex\\黑.jpg
+map_Kd textures/LaiKaEn/black.jpg
 
-newmtl LaiKaEnTui
+newmtl LaiKaEnTuijia
 Ns 900.000000
 Ka 1.000000 1.000000 1.000000
 Kd 0.800000 0.800000 0.800000
@@ -65,4 +65,4 @@ Ke 0.000000 0.000000 0.000000
 Ni 0.000000
 d 1.000000
 illum 1
-map_Kd D:\\mihoyo\\Resource\\honkaiStarRailResource\\CharacterModels\\莱卡恩_by_绝区零_d04de74ed596cdb0dbe2da14acf392ea\\tex\\腿甲.tga
+map_Kd textures/LaiKaEn/LaiKaEnTui.tga
