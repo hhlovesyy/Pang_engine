@@ -1,2 +1,3 @@
 ﻿  main.cpp
+D:\MRenderer\PangEngine\MiniRendererCpp\MiniRendererCpp\main.cpp(131,28): warning C4101: “EBO”: 未引用的局部变量
   MiniRendererCpp.vcxproj -> D:\MRenderer\PangEngine\MiniRendererCpp\x64\Debug\MiniRendererCpp.exe
