@@ -14,6 +14,7 @@
 #include <iostream>
 #include <windows.h>
 #include <commdlg.h>
+#include "hello_triangle.h"
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow* window);
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);
@@ -186,10 +187,10 @@ void reset_everything()
 	shininess = 32.0;
 }
 
-int main()
+int test_blinn_phong()
 {
     // glfw: initialize and configure
-    // ------------------------------
+// ------------------------------
     glfwInit();
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
@@ -289,7 +290,7 @@ int main()
             // 高光系数，slider，2 ~ 256
             ImGui::Separator();
             ImGui::SliderFloat(u8"高光系数", &shininess, 2.0, 256.0);
-            
+
             // 创建一个按钮
             ImGui::Separator();
             if (ImGui::Button(u8"重置所有参数"))
@@ -300,7 +301,7 @@ int main()
             }
             ImGui::Separator();
             ImGui::Checkbox(u8"测试变换光源颜色属性", &light_varied);
-      
+
 
             ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
             ImGui::End();
@@ -308,7 +309,7 @@ int main()
         update_light_dir();
         // render
         // ------
-        glClearColor(0,0,0, 1.0f);
+        glClearColor(0, 0, 0, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         // render container, don't forget to enable shader before setting uniforms
@@ -317,25 +318,25 @@ int main()
         ourShader.setVec3("viewPos", camera.Position);
         //把//0:show ambient 1:show diffuse 2.show specular 3:is half lambert
         ourShader.setVec4("showThing", show_ambient, show_diffuse, show_specular, test_half_lambert);
-        
+
         glm::vec3 lightColor;
         if (light_varied)
         {
-			lightColor.x = static_cast<float>(sin(glfwGetTime() * 2.0));
-			lightColor.y = static_cast<float>(sin(glfwGetTime() * 0.7));
-			lightColor.z = static_cast<float>(sin(glfwGetTime() * 1.3));
-		}
+            lightColor.x = static_cast<float>(sin(glfwGetTime() * 2.0));
+            lightColor.y = static_cast<float>(sin(glfwGetTime() * 0.7));
+            lightColor.z = static_cast<float>(sin(glfwGetTime() * 1.3));
+        }
         else
         {
-			lightColor = glm::vec3(1.0f, 1.0f, 1.0f);
-		}
-        
+            lightColor = glm::vec3(1.0f, 1.0f, 1.0f);
+        }
+
         glm::vec3 diffuseColor = lightColor * glm::vec3(0.5f); // decrease the influence
-        glm::vec3 ambientColor = diffuseColor * glm::vec3(0.2f); // low influence
+        glm::vec3 ambientColor = diffuseColor * glm::vec3(0.5f); // low influence
         ourShader.setVec3("light.ambient", ambientColor);
         ourShader.setVec3("light.diffuse", diffuseColor);
         ourShader.setVec3("light.specular", 1.0f, 1.0f, 1.0f);
-        
+
         ourShader.setVec3("material.ambient", 1.0f, 0.5f, 0.31f);
         ourShader.setVec3("material.diffuse", 1.0f, 0.5f, 0.31f);
         ourShader.setVec3("material.specular", 0.5f, 0.5f, 0.5f); // specular lighting doesn't have full effect on this object's material
@@ -352,7 +353,7 @@ int main()
         model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));	// it's a bit too big for our scene, so scale it down
         ourShader.setMat4("model", model);
         ourModel.Draw(ourShader);
-        
+
 
         // 渲染
         ImGui::Render();
@@ -366,7 +367,7 @@ int main()
 
     // optional: de-allocate all resources once they've outlived their purpose:
     // ------------------------------------------------------------------------
-   
+
 
     // 清除GUI资源
     ImGui_ImplOpenGL3_Shutdown();
@@ -375,7 +376,14 @@ int main()
     // glfw: terminate, clearing all previously allocated GLFW resources.
     // ------------------------------------------------------------------
     glfwTerminate();
-    return 0;
+}
+
+int main()
+{
+    //int res = test_blinn_phong();
+    int res = test_triangle_rotate();
+    if (res == -1) return -1;
+    else return 0;
 }
 
 // process all input: query GLFW whether relevant keys are pressed/released this frame and react accordingly

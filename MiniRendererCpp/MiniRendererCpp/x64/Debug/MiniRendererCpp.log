@@ -1,2 +1,8 @@
 ﻿  main.cpp
+D:\Windows Kits\10\Include\10.0.22621.0\shared\minwindef.h(130,1): warning C4005: “APIENTRY”: 宏重定义
+  (编译源文件“main.cpp”)
+  D:\mihoyo\LanguageLearning\cpp\MyLearnTinyRenderer0723\Pang_engine\MiniRendererCpp\MiniRendererCpp\glad.h(32,1):
+  参见“APIENTRY”的前一个定义
+  
+D:\mihoyo\LanguageLearning\cpp\MyLearnTinyRenderer0723\Pang_engine\MiniRendererCpp\MiniRendererCpp\main.cpp(379): warning C4715: “test_blinn_phong”: 不是所有的控件路径都返回值
   MiniRendererCpp.vcxproj -> D:\mihoyo\LanguageLearning\cpp\MyLearnTinyRenderer0723\Pang_engine\MiniRendererCpp\x64\Debug\MiniRendererCpp.exe
