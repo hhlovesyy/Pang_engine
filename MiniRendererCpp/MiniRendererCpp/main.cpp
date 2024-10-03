@@ -383,7 +383,8 @@ int main()
 {
     //int res = test_blinn_phong();
     //int res = test_triangle_rotate();
-    int res = test_pbr_scene();
+    //int res = test_pbr_scene();
+    int res = test_pbr_scene_with_texture();
     if (res == -1) return -1;
     else return 0;
 }
