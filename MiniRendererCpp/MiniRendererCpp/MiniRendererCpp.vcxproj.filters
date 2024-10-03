@@ -57,6 +57,9 @@
     <ClInclude Include="hello_triangle.h">
       <Filter>core_lesson</Filter>
     </ClInclude>
+    <ClInclude Include="hello_pbr.h">
+      <Filter>core_lesson</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="tgaimage.cpp">
