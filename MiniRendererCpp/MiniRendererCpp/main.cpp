@@ -16,6 +16,7 @@
 #include <commdlg.h>
 #include "hello_triangle.h"
 #include "hello_pbr.h"
+#include "hello_ibl.h"
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow* window);
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);
@@ -384,7 +385,8 @@ int main()
     //int res = test_blinn_phong();
     //int res = test_triangle_rotate();
     //int res = test_pbr_scene();
-    int res = test_pbr_scene_with_texture();
+    //int res = test_pbr_scene_with_texture();
+    int res = test_ibl_irradiance_without_irradiance_map();
     if (res == -1) return -1;
     else return 0;
 }

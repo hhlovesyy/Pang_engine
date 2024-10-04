@@ -144,6 +144,7 @@
     <ClInclude Include="camera.h" />
     <ClInclude Include="geometry.h" />
     <ClInclude Include="glad.h" />
+    <ClInclude Include="hello_ibl.h" />
     <ClInclude Include="hello_pbr.h" />
     <ClInclude Include="hello_triangle.h" />
     <ClInclude Include="khrplatform.h" />
