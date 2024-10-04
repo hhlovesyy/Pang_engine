@@ -386,7 +386,8 @@ int main()
     //int res = test_triangle_rotate();
     //int res = test_pbr_scene();
     //int res = test_pbr_scene_with_texture();
-    int res = test_ibl_irradiance();
+    //int res = test_ibl_irradiance();
+    int res = test_ibl_irradiance_with_specular();
     if (res == -1) return -1;
     else return 0;
 }
