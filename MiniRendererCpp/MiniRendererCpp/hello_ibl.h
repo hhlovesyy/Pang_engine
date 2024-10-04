@@ -37,7 +37,7 @@ bool firstMouse_ibl = true;
 float deltaTime_ibl = 0.0f;
 float lastFrame_ibl = 0.0f;
 
-int test_ibl_irradiance_without_irradiance_map()
+int test_ibl_irradiance()
 {
     // glfw: initialize and configure
     // ------------------------------
@@ -86,9 +86,9 @@ int test_ibl_irradiance_without_irradiance_map()
 
     // build and compile shaders
     // -------------------------
-    Shader pbrShader("shaders/2.1.1.pbr.vs", "shaders/2.1.1.pbr.fs");
+    Shader pbrShader("shaders/2.1.2.pbr.vs", "shaders/2.1.2.pbr.fs");
     Shader equirectangularToCubemapShader("shaders/2.1.2.cubemap.vs", "shaders/2.1.2.equirectangular_to_cubemap.fs");
-    //Shader irradianceShader("shaders/2.1.2.cubemap.vs", "2.1.2.irradiance_convolution.fs");
+    Shader irradianceShader("shaders/2.1.2.cubemap.vs", "shaders/2.1.2.irradiance_convolution.fs");
     Shader backgroundShader("shaders/2.1.2.background.vs", "shaders/2.1.2.background.fs");
 
 
@@ -133,7 +133,7 @@ int test_ibl_irradiance_without_irradiance_map()
     // ---------------------------------
     stbi_set_flip_vertically_on_load(true);
     int width, height, nrComponents;
-    float* data = stbi_loadf("resources/textures/hdr/venetian_crossroads_2k.hdr", &width, &height, &nrComponents, 0);
+    float* data = stbi_loadf("resources/textures/hdr/parking_garage_2k.hdr", &width, &height, &nrComponents, 0);
     unsigned int hdrTexture;
     if (data)
     {
@@ -200,6 +200,50 @@ int test_ibl_irradiance_without_irradiance_map()
     }
 
     glBindFramebuffer(GL_FRAMEBUFFER, 0); //最后，恢复默认帧缓冲（通常是屏幕），使后续的绘制操作不再使用 captureFBO。
+    
+
+    //=================对cubemap贴图进行处理，pre-filtering=================
+    // pbr: create an irradiance cubemap, and re-scale capture FBO to irradiance scale.
+    // --------------------------------------------------------------------------------
+    unsigned int irradianceMap;
+    glGenTextures(1, &irradianceMap);
+    glBindTexture(GL_TEXTURE_CUBE_MAP, irradianceMap);
+    //由于辐照度图对所有周围的辐射值取了平均值，因此它丢失了大部分高频细节，所以我们可以以较低的分辨率（32x32）存储，并让 OpenGL 的线性滤波完成大部分工作。
+    for (unsigned int i = 0; i < 6; ++i)
+    {
+        glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGB16F, 32, 32, 0, GL_RGB, GL_FLOAT, nullptr);
+    }
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    //接下来，我们将捕捉到的帧缓冲图像缩放到新的分辨率：
+    glBindFramebuffer(GL_FRAMEBUFFER, captureFBO);
+    glBindRenderbuffer(GL_RENDERBUFFER, captureRBO);
+    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, 32, 32);
+    // pbr: solve diffuse integral by convolution to create an irradiance (cube)map.
+    // -----------------------------------------------------------------------------
+    irradianceShader.use();
+    irradianceShader.setInt("environmentMap", 0);
+    irradianceShader.setMat4("projection", captureProjection);
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_CUBE_MAP, envCubemap);
+
+    glViewport(0, 0, 32, 32); // don't forget to configure the viewport to the capture dimensions.
+    glBindFramebuffer(GL_FRAMEBUFFER, captureFBO);
+    for (unsigned int i = 0; i < 6; ++i)
+    {
+        irradianceShader.setMat4("view", captureViews[i]);
+        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, irradianceMap, 0);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+        renderCube_ibl();
+    }
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    //=================finish：对cubemap贴图进行处理，pre-filtering=================
+    
+    
     // initialize static shader uniforms before rendering
     // --------------------------------------------------
     glm::mat4 projection = glm::perspective(glm::radians(camera_ibl.Zoom), (float)SCR_WIDTH_IBL / (float)SCR_HEIGHT_IBL, 0.1f, 100.0f);
@@ -238,6 +282,10 @@ int test_ibl_irradiance_without_irradiance_map()
         pbrShader.setMat4("view", view);
         pbrShader.setVec3("camPos", camera_ibl.Position);
 
+        // bind pre-computed IBL data
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_CUBE_MAP, irradianceMap);
+
         // render rows*column number of spheres with varying metallic/roughness values scaled by rows and columns respectively
         glm::mat4 model = glm::mat4(1.0f);
         for (int row = 0; row < nrRows; ++row)
@@ -268,7 +316,7 @@ int test_ibl_irradiance_without_irradiance_map()
         for (unsigned int i = 0; i < sizeof(lightPositions) / sizeof(lightPositions[0]); ++i)
         {
             glm::vec3 newPos = lightPositions[i] + glm::vec3(sin(glfwGetTime() * 5.0) * 5.0, 0.0, 0.0);
-            newPos = lightPositions[i];
+            //newPos = lightPositions[i];
             pbrShader.setVec3("lightPositions[" + std::to_string(i) + "]", newPos);
             pbrShader.setVec3("lightColors[" + std::to_string(i) + "]", lightColors[i]);
 
@@ -285,6 +333,8 @@ int test_ibl_irradiance_without_irradiance_map()
         backgroundShader.setMat4("view", view);
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_CUBE_MAP, envCubemap);
+        // 有的hdr图启用下一行会有一些黑色的色块，不知道为什么,todo:研究一下，可能是prefiltering写的还有问题，或者hdr图有问题也有可能
+        //glBindTexture(GL_TEXTURE_CUBE_MAP, irradianceMap); // display irradiance map
         renderCube_ibl();
 
         /*    equirectangularToCubemapShader.Use();
