@@ -17,6 +17,7 @@
 #include "hello_triangle.h"
 #include "hello_pbr.h"
 #include "hello_ibl.h"
+#include "hello_texture.h"
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow* window);
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);
@@ -387,7 +388,9 @@ int main()
     //int res = test_pbr_scene();
     //int res = test_pbr_scene_with_texture();
     //int res = test_ibl_irradiance();
-    int res = test_ibl_irradiance_with_specular();
+    //int res = test_ibl_irradiance_with_specular();
+    
+    int res = test_UV_space();
     if (res == -1) return -1;
     else return 0;
 }

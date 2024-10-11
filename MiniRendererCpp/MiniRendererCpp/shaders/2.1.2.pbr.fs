@@ -112,6 +112,7 @@ void main()
         float NdotL = max(dot(N, L), 0.0);        
 
         // add to outgoing radiance Lo
+        // https://zhuanlan.zhihu.com/p/66518450, BRDF公式可以参考这个
         Lo += (kD * albedo / PI + specular) * radiance * NdotL; // note that we already multiplied the BRDF by the Fresnel (kS) so we won't multiply by kS again
     }   
     

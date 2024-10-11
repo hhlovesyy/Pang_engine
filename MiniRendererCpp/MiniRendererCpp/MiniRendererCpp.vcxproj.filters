@@ -63,6 +63,9 @@
     <ClInclude Include="hello_ibl.h">
       <Filter>core_lesson</Filter>
     </ClInclude>
+    <ClInclude Include="hello_texture.h">
+      <Filter>core_lesson</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="tgaimage.cpp">
