@@ -2,7 +2,7 @@
 #define SHADER_H
 
 #include "glad.h"
-
+#include <glm/glm.hpp>
 #include <string>
 #include <fstream>
 #include <sstream>
@@ -50,7 +50,7 @@ public:
         unsigned int vertex, fragment;
         // vertex shader
         vertex = glCreateShader(GL_VERTEX_SHADER);
-        glShaderSource(vertex, 1, &vShaderCode, NULL);
+        glShaderSource(vertex, 1, &vShaderCode, NULL);  //第二参数指定了传递的源码字符串数量，这里只有一个。第三个参数是顶点着色器真正的源码，第四个参数我们先设置为NULL。
         glCompileShader(vertex);
         checkCompileErrors(vertex, "VERTEX");
         // fragment Shader
@@ -67,10 +67,11 @@ public:
         // delete the shaders as they're linked into our program now and no longer necessary
         glDeleteShader(vertex);
         glDeleteShader(fragment);
+
     }
     // activate the shader
     // ------------------------------------------------------------------------
-    void use()
+    void use() const
     {
         glUseProgram(ID);
     }
@@ -90,14 +91,56 @@ public:
     {
         glUniform1f(glGetUniformLocation(ID, name.c_str()), value);
     }
+    // ------------------------------------------------------------------------
+    void setVec2(const std::string& name, const glm::vec2& value) const
+    {
+        glUniform2fv(glGetUniformLocation(ID, name.c_str()), 1, &value[0]);
+    }
+    void setVec2(const std::string& name, float x, float y) const
+    {
+        glUniform2f(glGetUniformLocation(ID, name.c_str()), x, y);
+    }
+    // ------------------------------------------------------------------------
+    void setVec3(const std::string& name, const glm::vec3& value) const
+    {
+        glUniform3fv(glGetUniformLocation(ID, name.c_str()), 1, &value[0]);
+    }
+    void setVec3(const std::string& name, float x, float y, float z) const
+    {
+        glUniform3f(glGetUniformLocation(ID, name.c_str()), x, y, z);
+    }
+    // ------------------------------------------------------------------------
+    void setVec4(const std::string& name, const glm::vec4& value) const
+    {
+        glUniform4fv(glGetUniformLocation(ID, name.c_str()), 1, &value[0]);
+    }
+    void setVec4(const std::string& name, float x, float y, float z, float w) const
+    {
+        glUniform4f(glGetUniformLocation(ID, name.c_str()), x, y, z, w);
+    }
+    // ------------------------------------------------------------------------
+    void setMat2(const std::string& name, const glm::mat2& mat) const
+    {
+        glUniformMatrix2fv(glGetUniformLocation(ID, name.c_str()), 1, GL_FALSE, &mat[0][0]);
+    }
+    // ------------------------------------------------------------------------
+    void setMat3(const std::string& name, const glm::mat3& mat) const
+    {
+        glUniformMatrix3fv(glGetUniformLocation(ID, name.c_str()), 1, GL_FALSE, &mat[0][0]);
+    }
+    // ------------------------------------------------------------------------
+    void setMat4(const std::string& name, const glm::mat4& mat) const
+    {
+        glUniformMatrix4fv(glGetUniformLocation(ID, name.c_str()), 1, GL_FALSE, &mat[0][0]);
+    }
 
 private:
     // utility function for checking shader compilation/linking errors.
     // ------------------------------------------------------------------------
-    void checkCompileErrors(unsigned int shader, std::string type)
+    void checkCompileErrors(GLuint shader, std::string type)
     {
-        int success;
-        char infoLog[1024];
+        GLint success;
+        GLchar infoLog[1024];
         if (type != "PROGRAM")
         {
             glGetShaderiv(shader, GL_COMPILE_STATUS, &success);

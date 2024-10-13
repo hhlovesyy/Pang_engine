@@ -1,16 +1,52 @@
 ﻿  main.cpp
-D:\mihoyo\LanguageLearning\cpp\MyLearnTinyRenderer0723\Pang_engine\MiniRendererCpp\MiniRendererCpp\our_gl.h(15,53): warning C4244: “参数”: 从“double”转换到“const int”，可能丢失数据
+D:\Windows Kits\10\Include\10.0.22621.0\shared\minwindef.h(130,1): warning C4005: “APIENTRY”: 宏重定义
+  (编译源文件“main.cpp”)
+  D:\mihoyo\LanguageLearning\cpp\MyLearnTinyRenderer0723\Pang_engine\MiniRendererCpp\MiniRendererCpp\glad.h(32,1):
+  参见“APIENTRY”的前一个定义
+  
+D:\mihoyo\LanguageLearning\cpp\MyLearnTinyRenderer0723\Pang_engine\MiniRendererCpp\MiniRendererCpp\hello_ibl.h(890,58): error C2065: “camera”: 未声明的标识符
   (编译源文件“main.cpp”)
   
-D:\mihoyo\LanguageLearning\cpp\MyLearnTinyRenderer0723\Pang_engine\MiniRendererCpp\MiniRendererCpp\our_gl.h(15,31): warning C4244: “参数”: 从“double”转换到“const int”，可能丢失数据
+D:\mihoyo\LanguageLearning\cpp\MyLearnTinyRenderer0723\Pang_engine\MiniRendererCpp\MiniRendererCpp\hello_ibl.h(890,50): error C2672: “glm::radians”: 未找到匹配的重载函数
+  (编译源文件“main.cpp”)
+  D:\mihoyo\LanguageLearning\cpp\MyLearnTinyRenderer0723\Pang_engine\MiniRendererCpp\MiniRendererCpp\thirdparty\glm\glm-1.0.0\glm\detail\func_trigonometric.inl(9,43):
+  可能是“genType glm::radians(genType)”
+  D:\mihoyo\LanguageLearning\cpp\MyLearnTinyRenderer0723\Pang_engine\MiniRendererCpp\MiniRendererCpp\thirdparty\glm\glm-1.0.0\glm\trigonometric.hpp(38,43):
+  或    “glm::vec<L,T,Q> glm::radians(const glm::vec<L,T,Q> &)”
+  
+D:\mihoyo\LanguageLearning\cpp\MyLearnTinyRenderer0723\Pang_engine\MiniRendererCpp\MiniRendererCpp\hello_ibl.h(890,79): error C2065: “SCR_WIDTH”: 未声明的标识符
   (编译源文件“main.cpp”)
   
-D:\mihoyo\LanguageLearning\cpp\MyLearnTinyRenderer0723\Pang_engine\MiniRendererCpp\MiniRendererCpp\main.cpp(83,48): warning C4244: “参数”: 从“double”转换到“const _Ty”，可能丢失数据
-D:\mihoyo\LanguageLearning\cpp\MyLearnTinyRenderer0723\Pang_engine\MiniRendererCpp\MiniRendererCpp\main.cpp(83,48): warning C4244:         with
-D:\mihoyo\LanguageLearning\cpp\MyLearnTinyRenderer0723\Pang_engine\MiniRendererCpp\MiniRendererCpp\main.cpp(83,48): warning C4244:         [
-D:\mihoyo\LanguageLearning\cpp\MyLearnTinyRenderer0723\Pang_engine\MiniRendererCpp\MiniRendererCpp\main.cpp(83,48): warning C4244:             _Ty=int
-D:\mihoyo\LanguageLearning\cpp\MyLearnTinyRenderer0723\Pang_engine\MiniRendererCpp\MiniRendererCpp\main.cpp(83,48): warning C4244:         ]
-D:\mihoyo\LanguageLearning\cpp\MyLearnTinyRenderer0723\Pang_engine\MiniRendererCpp\MiniRendererCpp\main.cpp(95,53): warning C4244: “参数”: 从“double”转换到“const int”，可能丢失数据
-D:\mihoyo\LanguageLearning\cpp\MyLearnTinyRenderer0723\Pang_engine\MiniRendererCpp\MiniRendererCpp\main.cpp(95,29): warning C4244: “参数”: 从“double”转换到“const int”，可能丢失数据
-  LINK : 没有找到 D:\mihoyo\LanguageLearning\cpp\MyLearnTinyRenderer0723\Pang_engine\MiniRendererCpp\x64\Debug\MiniRendererCpp.exe 或上一个增量链接没有生成它；正在执行完全链接
-  MiniRendererCpp.vcxproj -> D:\mihoyo\LanguageLearning\cpp\MyLearnTinyRenderer0723\Pang_engine\MiniRendererCpp\x64\Debug\MiniRendererCpp.exe
+D:\mihoyo\LanguageLearning\cpp\MyLearnTinyRenderer0723\Pang_engine\MiniRendererCpp\MiniRendererCpp\hello_ibl.h(890,98): error C2065: “SCR_HEIGHT”: 未声明的标识符
+  (编译源文件“main.cpp”)
+  
+D:\mihoyo\LanguageLearning\cpp\MyLearnTinyRenderer0723\Pang_engine\MiniRendererCpp\MiniRendererCpp\hello_ibl.h(890,33): error C2672: “glm::perspective”: 未找到匹配的重载函数
+  (编译源文件“main.cpp”)
+  D:\mihoyo\LanguageLearning\cpp\MyLearnTinyRenderer0723\Pang_engine\MiniRendererCpp\MiniRendererCpp\thirdparty\glm\glm-1.0.0\glm\ext\matrix_clip_space.hpp(332,39):
+  可能是“glm::mat<4,4,T,glm::packed_highp> glm::perspective(T,T,T,T)”
+  	D:\mihoyo\LanguageLearning\cpp\MyLearnTinyRenderer0723\Pang_engine\MiniRendererCpp\MiniRendererCpp\hello_ibl.h(890,33):
+  	“glm::mat<4,4,T,glm::packed_highp> glm::perspective(T,T,T,T)”: 应输入 4 个参数，却提供了 3 个
+  
+D:\mihoyo\LanguageLearning\cpp\MyLearnTinyRenderer0723\Pang_engine\MiniRendererCpp\MiniRendererCpp\hello_ibl.h(908,9): error C2065: “deltaTime”: 未声明的标识符
+  (编译源文件“main.cpp”)
+  
+D:\mihoyo\LanguageLearning\cpp\MyLearnTinyRenderer0723\Pang_engine\MiniRendererCpp\MiniRendererCpp\hello_ibl.h(908,36): error C2065: “lastFrame”: 未声明的标识符
+  (编译源文件“main.cpp”)
+  
+D:\mihoyo\LanguageLearning\cpp\MyLearnTinyRenderer0723\Pang_engine\MiniRendererCpp\MiniRendererCpp\hello_ibl.h(909,9): error C2065: “lastFrame”: 未声明的标识符
+  (编译源文件“main.cpp”)
+  
+D:\mihoyo\LanguageLearning\cpp\MyLearnTinyRenderer0723\Pang_engine\MiniRendererCpp\MiniRendererCpp\hello_ibl.h(913,9): error C3861: “processInput”: 找不到标识符
+  (编译源文件“main.cpp”)
+  
+D:\mihoyo\LanguageLearning\cpp\MyLearnTinyRenderer0723\Pang_engine\MiniRendererCpp\MiniRendererCpp\hello_ibl.h(924,26): error C2065: “camera”: 未声明的标识符
+  (编译源文件“main.cpp”)
+  
+D:\mihoyo\LanguageLearning\cpp\MyLearnTinyRenderer0723\Pang_engine\MiniRendererCpp\MiniRendererCpp\hello_ibl.h(926,37): error C2065: “camera”: 未声明的标识符
+  (编译源文件“main.cpp”)
+  
+D:\mihoyo\LanguageLearning\cpp\MyLearnTinyRenderer0723\Pang_engine\MiniRendererCpp\MiniRendererCpp\hello_ibl.h(926,18): error C2661: “Shader::setVec3”: 没有重载函数接受 1 个参数
+  (编译源文件“main.cpp”)
+  D:\mihoyo\LanguageLearning\cpp\MyLearnTinyRenderer0723\Pang_engine\MiniRendererCpp\MiniRendererCpp\hello_ibl.h(926,18):
+  尝试匹配参数列表“(const char [7])”时
+  

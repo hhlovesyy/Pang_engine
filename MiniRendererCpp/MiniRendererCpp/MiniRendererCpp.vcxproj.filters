@@ -13,6 +13,9 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="core_lesson">
+      <UniqueIdentifier>{e6a6bde1-12af-4832-b9db-58d0067fc94b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="tgaimage.h">
@@ -41,6 +44,27 @@
     </ClInclude>
     <ClInclude Include="shader.h">
       <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="MeshGL.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="ModelGL.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="camera.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="hello_triangle.h">
+      <Filter>core_lesson</Filter>
+    </ClInclude>
+    <ClInclude Include="hello_pbr.h">
+      <Filter>core_lesson</Filter>
+    </ClInclude>
+    <ClInclude Include="hello_ibl.h">
+      <Filter>core_lesson</Filter>
+    </ClInclude>
+    <ClInclude Include="hello_texture.h">
+      <Filter>core_lesson</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -89,5 +113,11 @@
     <ClCompile Include="glad.c">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="imgui\backends\imgui_impl_glfw.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
 </Project>
