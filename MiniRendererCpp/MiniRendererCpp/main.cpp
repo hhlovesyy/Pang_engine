@@ -390,7 +390,8 @@ int main()
     //int res = test_ibl_irradiance();
     //int res = test_ibl_irradiance_with_specular();
     
-    int res = test_UV_space();
+    //int res = test_UV_space();
+    int res = test_texture_attribute();
     if (res == -1) return -1;
     else return 0;
 }

@@ -77,6 +77,141 @@ bool firstMouse_tex = true;
 float deltaTime_tex = 0.0f;
 float lastFrame_tex = 0.0f;
 
+int test_texture_attribute()
+{
+    // glfw: initialize and configure
+    // ------------------------------
+    glfwInit();
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+    glfwWindowHint(GLFW_SAMPLES, 4);
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+
+#ifdef __APPLE__
+    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+#endif
+
+    // glfw window creation
+    // --------------------
+    GLFWwindow* window = glfwCreateWindow(SCR_WIDTH_TEX, SCR_HEIGHT_TEX, "TestUVSpace", NULL, NULL);
+    glfwMakeContextCurrent(window);
+    if (window == NULL)
+    {
+        std::cout << "Failed to create GLFW window" << std::endl;
+        glfwTerminate();
+        return -1;
+    }
+    glfwSetFramebufferSizeCallback(window, framebuffer_size_callback_texture);
+    glfwSetCursorPosCallback(window, mouse_callback_texture);
+    glfwSetScrollCallback(window, scroll_callback_texture);
+    // tell GLFW to capture our mouse
+    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+
+    // glad: load all OpenGL function pointers
+    // ---------------------------------------
+    if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
+    {
+        std::cout << "Failed to initialize GLAD" << std::endl;
+        return -1;
+    }
+
+    // configure global opengl state
+    // -----------------------------
+    glEnable(GL_DEPTH_TEST);
+    Shader textureAttributeShader("shaders/chapter_texture/textureAttribute.vs", "shaders/chapter_texture/textureAttribute.fs");
+    textureAttributeShader.use();
+    textureAttributeShader.setInt("albedoMap", 0);
+    unsigned int albedo = loadTexture_1("resources/textures/uv1.png");
+
+    // imgui窗口设置
+    IMGUI_CHECKVERSION();
+    ImGui::CreateContext();
+    ImGuiIO& io = ImGui::GetIO(); (void)io;
+    io.MouseDrawCursor = true; // 确保鼠标光标被绘制
+    // 设置颜色主题
+    ImGui::StyleColorsDark();
+    //设置字体
+    io.Fonts->AddFontFromFileTTF("fonts/Genshin.ttf", 18.0f, NULL, io.Fonts->GetGlyphRangesChineseFull());
+    // Setup Platform/Renderer bindings
+    ImGui_ImplGlfw_InitForOpenGL(window, true);
+    ImGui_ImplOpenGL3_Init("#version 330");
+    float tilingX = 1.0f;
+    float tilingY = 1.0f;
+    float offsetX = 0.0f;
+    float offsetY = 0.0f;
+
+    while (!glfwWindowShouldClose(window))
+    {
+        float currentFrame = static_cast<float>(glfwGetTime());
+        deltaTime_tex = currentFrame - lastFrame_tex;
+        lastFrame_tex = currentFrame;
+        // input
+        // -----
+        processInput_ibl(window);
+        // 启动ImGui框架
+        ImGui_ImplOpenGL3_NewFrame();
+        ImGui_ImplGlfw_NewFrame();
+        ImGui::NewFrame();
+        {
+            ImGui::Begin(u8"纹理映射demo");
+            ImGui::SetWindowSize(ImVec2(800, 500));
+            ImGui::SetWindowPos(ImVec2(0, 0));
+            //可以移动位置
+            //ImGui::
+
+            ImGui::Text(u8"控制tiling和offset");
+            //ImGui::SliderFloat("tilingX", &tilingX, -10.0f, 10.0f);
+            //ImGui::SameLine(); // 在同一行显示
+            ImGui::InputFloat("##input", &tilingX, 0.1f, 1.0f, "%.3f");
+            //ImGui::SliderFloat("tilingY", &tilingY, -10.0f, 10.0f);
+            //ImGui::SameLine(); // 在同一行显示
+            ImGui::InputFloat("##input2", &tilingY, 0.1f, 1.0f, "%.3f");
+            //ImGui::SliderFloat("offsetX", &offsetX, -1.0f, 1.0f);
+            //ImGui::SameLine(); // 在同一行显示
+            ImGui::InputFloat("##input3", &offsetX, 0.05f, 1.0f, "%.3f");
+            //ImGui::SliderFloat("offsetY", &offsetY, -1.0f, 1.0f);
+            //ImGui::SameLine(); // 在同一行显示
+            ImGui::InputFloat("##input4", &offsetY, 0.05f, 1.0f, "%.3f");
+
+            ImGui::End();
+        }
+
+        glClearColor(0, 0, 0, 1.0f);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        textureAttributeShader.use();
+
+        //set value
+        textureAttributeShader.setVec4("tilingAndOffset", glm::vec4(tilingX, tilingY, offsetX, offsetY));
+        glm::mat4 model = glm::mat4(1.0f);
+        model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f)); // translate it down so it's at the center of the scene
+        model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));	// it's a bit too big for our scene, so scale it down
+        textureAttributeShader.setMat4("model", model);
+
+        glm::mat4 projection = glm::perspective(glm::radians(camera_tex.Zoom), (float)SCR_WIDTH_TEX / (float)SCR_HEIGHT_TEX, 0.1f, 100.0f);
+        glm::mat4 view = camera_tex.GetViewMatrix();
+        textureAttributeShader.setMat4("projection", projection);
+        textureAttributeShader.setMat4("view", view);
+        renderQuad_texture();
+
+        // 渲染
+        ImGui::Render();
+        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
+        // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
+        // -------------------------------------------------------------------------------
+        glfwSwapBuffers(window);
+        glfwPollEvents();
+    }
+    // 清除GUI资源
+    ImGui_ImplOpenGL3_Shutdown();
+    ImGui_ImplGlfw_Shutdown();
+    ImGui::DestroyContext();
+    // glfw: terminate, clearing all previously allocated GLFW resources.
+    // ------------------------------------------------------------------
+    glfwTerminate();
+
+}
+
 int test_UV_space()
 {
     // glfw: initialize and configure
